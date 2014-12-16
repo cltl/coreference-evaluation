@@ -18,6 +18,7 @@ public class MakeScoreScript {
             String pathToKeyFolder = "";
             String pathToResponseFolder = "";
             String corpus = "";
+            String method = "";
            //   pathToKeyFolder = "/Users/piek/Desktop/NWR/NWR-benchmark/coreference/corpus_CONLL/corpus_apple/entities/key";
            //   pathToResponseFolder = "/Users/piek/Desktop/NWR/NWR-benchmark/coreference/corpus_CONLL/corpus_apple/entities/response";
            //   corpus = "corpus_apple_entities";
@@ -31,6 +32,9 @@ public class MakeScoreScript {
                 }
                 else if (arg.equalsIgnoreCase("--corpus") && args.length>(i+1)) {
                     corpus = args[i+1];
+                }
+                else if (arg.equalsIgnoreCase("--method") && args.length>(i+1)) {
+                    method = args[i+1];
                 }
             }
 
@@ -50,7 +54,7 @@ public class MakeScoreScript {
                     if (keyS1.equals(responseS1)) {
                       //  System.out.println("keyFile = " + keyFile.getCanonicalPath());
                       //  System.out.println("keyFile = " + keyFile.getAbsolutePath());
-                        String str = "perl ./v8.01/scorer.pl all "+keyFile.getAbsolutePath()+" "+responseFile.getAbsolutePath()+" > "+responseFile.getAbsolutePath()+".result \n";
+                        String str = "perl ./v8.01/scorer.pl "+method+" "+keyFile.getAbsolutePath()+" "+responseFile.getAbsolutePath()+" > "+responseFile.getAbsolutePath()+"."+method+".result \n";
                         scriptFos.write(str.getBytes());
                     }
                 }
