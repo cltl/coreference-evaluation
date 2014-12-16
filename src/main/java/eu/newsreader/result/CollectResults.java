@@ -28,9 +28,9 @@ public class CollectResults {
     static int totalStrictlyCorrect = 0;
     static int totalPartiallyCorrect = 0;
 
-    static int totalCorrectCoreferences = 0;
-    static int totalKeyCoreferenceSets = 0;
-    static int totalResponseCoreferenceSets = 0;
+    static double totalCorrectCoreferences = 0;
+    static double totalKeyCoreferenceSets = 0;
+    static double totalResponseCoreferenceSets = 0;
 
     static public void main (String[] args) {
         String pathToResponseFolder = "";
@@ -244,8 +244,15 @@ public class CollectResults {
                                 }
                             }
                         }
-                        else if (inputLine.startsWith("Coreference:")) {
+                        else if (inputLine.startsWith("Coreference:")
+                                ||
+                                // inputLine.startsWith("Coreference links:")
+                                 inputLine.startsWith("BLANC:")
+                                ) {
                             //Coreference: Recall: (1 / 2) 50%	Precision: (1 / 4) 25%	F1: 33.33%
+                            //Coreference links: Recall: (1 / 1) 100%	Precision: (1 / 17) 5.88%	F1: 11.11%
+                            //BLANC: Recall: (0.851851851851852 / 1) 85.18%	Precision: (0.183632543926662 / 1) 18.36%	F1: 27%
+
                             String [] fields = inputLine.split("%");
                             if (fields.length>=3) {
                                 int idx = fields[0].indexOf(")");
@@ -267,7 +274,7 @@ public class CollectResults {
                                     //System.out.println("correct = " + correct);
                                     //System.out.println("recall = " + recall);
                                     try {
-                                        totalCorrectCoreferences += Integer.parseInt(correct);
+                                        totalCorrectCoreferences += Double.parseDouble(correct);
                                     } catch (NumberFormatException e) {
                                         e.printStackTrace();
                                     }
@@ -313,6 +320,11 @@ public class CollectResults {
                                     f1TotalCoreference += cnt;
                                 }
                             }
+                        }
+                        else if (inputLine.startsWith("")) {
+
+                            //Non-coreference links: Recall: (95 / 135) 70.37%	Precision: (95 / 308) 30.84%	F1: 42.88%
+                            //BLANC: Recall: (0.851851851851852 / 1) 85.18%	Precision: (0.183632543926662 / 1) 18.36%	F1: 27%
                         }
                     }
                 }
@@ -365,5 +377,16 @@ public class CollectResults {
      Coreference: Recall: (1 / 2) 50%	Precision: (1 / 4) 25%	F1: 33.33%
      --------------------------------------------------------------------------
 
+
+     ====== TOTALS =======
+     Identification of Mentions: Recall: (15 / 17) 88.23%	Precision: (15 / 26) 57.69%	F1: 69.76%
+     --------------------------------------------------------------------------
+
+     Coreference:
+     Coreference links: Recall: (1 / 1) 100%	Precision: (1 / 17) 5.88%	F1: 11.11%
+     --------------------------------------------------------------------------
+     Non-coreference links: Recall: (95 / 135) 70.37%	Precision: (95 / 308) 30.84%	F1: 42.88%
+     --------------------------------------------------------------------------
+     BLANC: Recall: (0.851851851851852 / 1) 85.18%	Precision: (0.183632543926662 / 1) 18.36%	F1: 27%
      */
 }
