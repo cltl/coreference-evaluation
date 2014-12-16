@@ -35,8 +35,17 @@ public class CollectResults {
     static public void main (String[] args) {
         String pathToResponseFolder = "";
         String extension = "";
-        pathToResponseFolder = "/Users/piek/Desktop/NWR/NWR-benchmark/coreference/corpus_CONLL/corpus_airbus/events/response";
-        extension = ".result";
+        for (int i = 0; i < args.length; i++) {
+            String arg = args[i];
+            if (arg.equals("--result-folder") && (args.length>(i+1))) {
+                pathToResponseFolder = args[i+1];
+            }
+            else if (arg.equals("--extension") && (args.length>(i+1))) {
+                extension = args[i+1];
+            }
+        }
+       // pathToResponseFolder = "/Users/piek/Desktop/NWR/NWR-benchmark/coreference/corpus_CONLL/corpus_airbus/events/response";
+       // extension = ".result";
         String pathToResultFile = new File(pathToResponseFolder).getParent()+"/"+"results.csv";
         ArrayList<File> resultFiles = Util.makeFlatFileList(new File(pathToResponseFolder), extension);
         for (int i = 0; i < resultFiles.size(); i++) {
