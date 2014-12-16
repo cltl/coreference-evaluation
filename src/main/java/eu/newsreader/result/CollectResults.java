@@ -4,6 +4,7 @@ import eu.newsreader.util.Util;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by piek on 12/16/14.
@@ -27,6 +28,10 @@ public class CollectResults {
     static int totalStrictlyCorrect = 0;
     static int totalPartiallyCorrect = 0;
 
+    static int totalCorrectCoreferences = 0;
+    static int totalKeyCoreferenceSets = 0;
+    static int totalResponseCoreferenceSets = 0;
+
     static public void main (String[] args) {
         String pathToResponseFolder = "";
         String extension = "";
@@ -38,11 +43,20 @@ public class CollectResults {
             File resultFile = resultFiles.get(i);
             readResultFile(resultFile);
         }
+        Date date = new Date();
         String str = "";
+        str = new File(pathToResponseFolder).getParent()+"\n";
+        str += "Date\t"+date.toString()+"\n\n";
         str +="Total key mentions\t"+totalKeyMentions+"\n";
         str +="Total response mentions\t"+totalResponseMentions+"\n";
         str +="Total missed mentions\t"+totalInventedMentions+"\n";
         str +="Total invented mentions\t"+totalMissedMentions+"\n";
+        str +="Strictly correct identified mentions\t"+totalStrictlyCorrect+"\n";
+        str +="Partially correct identified mentions\t"+totalPartiallyCorrect+"\n";
+        str +="Total key coreference sets\t"+totalKeyCoreferenceSets+"\n";
+        str +="Total response coreference sets\t"+totalResponseCoreferenceSets+"\n";
+        str +="Correct coreference sets\t"+ totalCorrectCoreferences+"\n";
+
         str += "\n";
         double mentionRecall = recallTotalMentions/resultFiles.size();
         double mentionPrecision = precisionTotalMentions/resultFiles.size();
@@ -50,21 +64,21 @@ public class CollectResults {
         double coreferenceRecall = recallTotalCoreference/resultFiles.size();
         double coreferencePrecision = precisionTotalCoreference/resultFiles.size();
         double coreferenceF = f1TotalCoreference/resultFiles.size();
-        str += "Macro average\n";
-        str += "\tRecall\tPrecision\tF1\n";
+        str += "\n";
+        str += "Macro average\tRecall\tPrecision\tF1\n";
         str += "Identification of Mentions\t"+mentionRecall+"\t"+mentionPrecision+"\t"+mentionF+"\n";
         str += "Coreference\t"+coreferenceRecall+"\t"+coreferencePrecision+"\t"+coreferenceF+"\n";
         str += "\n";
 
-        mentionRecall = (totalKeyMentions-totalMissedMentions)/totalKeyMentions;
-        mentionPrecision = (totalResponseMentions-totalInventedMentions)/totalResponseMentions;
-        mentionF = f1TotalMentions/resultFiles.size();
-        coreferenceRecall = recallTotalCoreference/resultFiles.size();
-        coreferencePrecision = precisionTotalCoreference/resultFiles.size();
-        coreferenceF = f1TotalCoreference/resultFiles.size();
+        mentionRecall = (totalKeyMentions-totalMissedMentions)/(double)totalKeyMentions;
+        mentionPrecision = (totalResponseMentions-totalInventedMentions)/(double)totalResponseMentions;
+        mentionF = 2*(mentionRecall*mentionPrecision)/(mentionRecall+mentionPrecision);
+        coreferenceRecall = totalCorrectCoreferences/(double)totalKeyCoreferenceSets;
+        coreferencePrecision = totalCorrectCoreferences/(double)totalResponseCoreferenceSets;
+        coreferenceF = 2*(coreferenceRecall*coreferencePrecision)/(coreferenceRecall+coreferencePrecision);
 
-        str += "Micro average\n";
-        str += "\tRecall\tPrecision\tF1\n";
+        str += "\n";
+        str += "Micro average\tRecall\tPrecision\tF1\n";
         str += "Identification of Mentions\t"+mentionRecall+"\t"+mentionPrecision+"\t"+mentionF+"\n";
         str += "Coreference\t"+coreferenceRecall+"\t"+coreferencePrecision+"\t"+coreferenceF+"\n";
         try {
@@ -156,6 +170,32 @@ public class CollectResults {
                                 totalInventedMentions += cnt;
                             }
                         }
+                        else if (inputLine.startsWith("Strictly correct identified mentions:")) {
+                            int idx = inputLine.lastIndexOf(":");
+                            if (idx>-1) {
+                                Integer cnt = null;
+                                try {
+                                    cnt = Integer.parseInt(inputLine.substring(idx+1).trim());
+                                } catch (NumberFormatException e) {
+                                    System.out.println("inputLine = " + inputLine);
+                                    e.printStackTrace();
+                                }
+                                totalStrictlyCorrect += cnt;
+                            }
+                        }
+                        else if (inputLine.startsWith("Partially correct identified mentions:")) {
+                            int idx = inputLine.lastIndexOf(":");
+                            if (idx>-1) {
+                                Integer cnt = null;
+                                try {
+                                    cnt = Integer.parseInt(inputLine.substring(idx+1).trim());
+                                } catch (NumberFormatException e) {
+                                    System.out.println("inputLine = " + inputLine);
+                                    e.printStackTrace();
+                                }
+                                totalPartiallyCorrect += cnt;
+                            }
+                        }
                         else if (inputLine.startsWith("Identification of Mentions:")) {
                             // Identification of Mentions: Recall: (9 / 12) 75%	Precision: (9 / 14) 64.28%	F1: 69.23%
                             String [] fields = inputLine.split("%");
@@ -210,6 +250,25 @@ public class CollectResults {
                                     }
                                     recallTotalCoreference += cnt;
                                 }
+                                int idx_s = fields[0].indexOf("(");
+                                int idx_div = fields[0].indexOf("/");
+                                if (idx>idx_div & idx_div>idx_s & idx_s>-1) {
+                                    String correct = fields[0].substring(idx_s+1, idx_div).trim();
+                                    String recall = fields[0].substring(idx_div+1, idx).trim();
+                                    //System.out.println("correct = " + correct);
+                                    //System.out.println("recall = " + recall);
+                                    try {
+                                        totalCorrectCoreferences += Integer.parseInt(correct);
+                                    } catch (NumberFormatException e) {
+                                        e.printStackTrace();
+                                    }
+                                    try {
+                                        totalKeyCoreferenceSets += Integer.parseInt(recall);
+                                    } catch (NumberFormatException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
                                 idx = fields[1].indexOf(")");
                                 if (idx>-1) {
                                     Double cnt = null;
@@ -220,6 +279,18 @@ public class CollectResults {
                                         e.printStackTrace();
                                     }
                                     precisionTotalCoreference += cnt;
+                                }
+                                idx_s = fields[1].indexOf("(");
+                                idx_div = fields[1].indexOf("/");
+                                if (idx>idx_div & idx_div>idx_s & idx_s>-1) {
+                                    String precision = fields[1].substring(idx_div + 1, idx).trim();
+                                    //System.out.println("precision = " + precision);
+                                    try {
+                                        totalResponseCoreferenceSets += Integer.parseInt(precision);
+                                    } catch (NumberFormatException e) {
+                                        e.printStackTrace();
+                                    }
+
                                 }
                                 idx = fields[2].lastIndexOf(":");
                                 if (idx>-1) {

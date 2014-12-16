@@ -50,7 +50,7 @@ public class MakeScoreScript {
                     if (keyS1.equals(responseS1)) {
                       //  System.out.println("keyFile = " + keyFile.getCanonicalPath());
                       //  System.out.println("keyFile = " + keyFile.getAbsolutePath());
-                        String str = "perl ./v8.01/scorer.pl muc "+keyFile.getAbsolutePath()+" "+responseFile.getAbsolutePath()+" > "+responseFile.getAbsolutePath()+".result \n";
+                        String str = "perl ./v8.01/scorer.pl all "+keyFile.getAbsolutePath()+" "+responseFile.getAbsolutePath()+" > "+responseFile.getAbsolutePath()+".result \n";
                         scriptFos.write(str.getBytes());
                     }
                 }
