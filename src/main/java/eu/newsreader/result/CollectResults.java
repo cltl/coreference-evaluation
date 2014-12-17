@@ -62,9 +62,9 @@ public class CollectResults {
         str +="Total invented mentions\t"+totalMissedMentions+"\n";
         str +="Strictly correct identified mentions\t"+totalStrictlyCorrect+"\n";
         str +="Partially correct identified mentions\t"+totalPartiallyCorrect+"\n";
-        str +="Total key coreference sets\t"+totalKeyCoreferenceSets+"\n";
-        str +="Total response coreference sets\t"+totalResponseCoreferenceSets+"\n";
-        str +="Correct coreference sets\t"+ totalCorrectCoreferences+"\n";
+        str +="Total key reference links\t"+totalKeyCoreferenceSets+"\n";
+        str +="Total response reference links\t"+totalResponseCoreferenceSets+"\n";
+        str +="Correct reference links\t"+ totalCorrectCoreferences+"\n";
 
         str += "\n";
         double mentionRecall = recallTotalMentions/resultFiles.size();
@@ -245,14 +245,8 @@ public class CollectResults {
                             }
                         }
                         else if (inputLine.startsWith("Coreference:")
-                                ||
-                                // inputLine.startsWith("Coreference links:")
-                                 inputLine.startsWith("BLANC:")
                                 ) {
                             //Coreference: Recall: (1 / 2) 50%	Precision: (1 / 4) 25%	F1: 33.33%
-                            //Coreference links: Recall: (1 / 1) 100%	Precision: (1 / 17) 5.88%	F1: 11.11%
-                            //BLANC: Recall: (0.851851851851852 / 1) 85.18%	Precision: (0.183632543926662 / 1) 18.36%	F1: 27%
-
                             String [] fields = inputLine.split("%");
                             if (fields.length>=3) {
                                 int idx = fields[0].indexOf(")");
@@ -321,10 +315,92 @@ public class CollectResults {
                                 }
                             }
                         }
-                        else if (inputLine.startsWith("")) {
+                        else if (
+                                inputLine.startsWith("BLANC:")
+                                ) {
+                            //BLANC: Recall: (0.851851851851852 / 1) 85.18%	Precision: (0.183632543926662 / 1) 18.36%	F1: 27%
 
+                            String [] fields = inputLine.split("%");
+                            if (fields.length>=3) {
+                                int idx = fields[0].indexOf(")");
+                                if (idx>-1) {
+                                    Double cnt = null;
+                                    try {
+                                        cnt = Double.parseDouble(fields[0].substring(idx+1).trim());
+                                    } catch (NumberFormatException e) {
+                                        System.out.println("inputLine = " + inputLine);
+                                        e.printStackTrace();
+                                    }
+                                    recallTotalCoreference += cnt;
+                                }
+                                idx = fields[1].indexOf(")");
+                                if (idx>-1) {
+                                    Double cnt = null;
+                                    try {
+                                        cnt = Double.parseDouble(fields[1].substring(idx+1).trim());
+                                    } catch (NumberFormatException e) {
+                                        System.out.println("inputLine = " + inputLine);
+                                        e.printStackTrace();
+                                    }
+                                    precisionTotalCoreference += cnt;
+                                }
+                                idx = fields[2].lastIndexOf(":");
+                                if (idx>-1) {
+                                    Double cnt = null;
+                                    try {
+                                        cnt = Double.parseDouble(fields[2].substring(idx + 1).trim());
+                                    } catch (NumberFormatException e) {
+                                        System.out.println("inputLine = " + inputLine);
+                                        e.printStackTrace();
+                                    }
+                                    f1TotalCoreference += cnt;
+                                }
+                            }
+                        }
+                        else if (inputLine.startsWith("Coreference links:") //// IN CASE OF BLANC WE GET DIFFERENT OUTPUT
+                                ||
+                                inputLine.startsWith("Non-coreference links:")
+                                ) {
+                            //Coreference links: Recall: (1 / 1) 100%	Precision: (1 / 17) 5.88%	F1: 11.11%
                             //Non-coreference links: Recall: (95 / 135) 70.37%	Precision: (95 / 308) 30.84%	F1: 42.88%
                             //BLANC: Recall: (0.851851851851852 / 1) 85.18%	Precision: (0.183632543926662 / 1) 18.36%	F1: 27%
+
+                            String [] fields = inputLine.split("%");
+                            if (fields.length>=3) {
+                                int idx = fields[0].indexOf(")");
+                                int idx_s = fields[0].indexOf("(");
+                                int idx_div = fields[0].indexOf("/");
+                                if (idx>idx_div & idx_div>idx_s & idx_s>-1) {
+                                    String correct = fields[0].substring(idx_s+1, idx_div).trim();
+                                    String recall = fields[0].substring(idx_div+1, idx).trim();
+                                    //System.out.println("correct = " + correct);
+                                    //System.out.println("recall = " + recall);
+                                    try {
+                                        totalCorrectCoreferences += Double.parseDouble(correct);
+                                    } catch (NumberFormatException e) {
+                                        e.printStackTrace();
+                                    }
+                                    try {
+                                        totalKeyCoreferenceSets += Double.parseDouble(recall);
+                                    } catch (NumberFormatException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+                                idx = fields[1].indexOf(")");
+                                idx_s = fields[1].indexOf("(");
+                                idx_div = fields[1].indexOf("/");
+                                if (idx>idx_div & idx_div>idx_s & idx_s>-1) {
+                                    String precision = fields[1].substring(idx_div + 1, idx).trim();
+                                    //System.out.println("precision = " + precision);
+                                    try {
+                                        totalResponseCoreferenceSets += Double.parseDouble(precision);
+                                    } catch (NumberFormatException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+                            }
                         }
                     }
                 }
