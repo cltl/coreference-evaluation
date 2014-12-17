@@ -32,6 +32,14 @@ public class CollectResults {
     static double totalKeyCoreferenceSets = 0;
     static double totalResponseCoreferenceSets = 0;
 
+    static double totalCorrectCoreferenceLinks = 0;
+    static double totalKeyCoreferenceLinks = 0;
+    static double totalResponseCoreferenceLinks = 0;
+
+    static double totalCorrectNonCoreferenceLinks = 0;
+    static double totalKeyNonCoreferenceLinks = 0;
+    static double totalResponseNonCoreferenceLinks = 0;
+
     static public void main (String[] args) {
         String pathToResponseFolder = "";
         String extension = "";
@@ -65,6 +73,14 @@ public class CollectResults {
         str +="Total key reference links\t"+totalKeyCoreferenceSets+"\n";
         str +="Total response reference links\t"+totalResponseCoreferenceSets+"\n";
         str +="Correct reference links\t"+ totalCorrectCoreferences+"\n";
+
+        str +="Total key coreference links\t"+totalKeyCoreferenceLinks+"\n";
+        str +="Total response coreference links\t"+totalResponseCoreferenceLinks+"\n";
+        str +="Correct coreference links\t"+ totalCorrectCoreferenceLinks+"\n";
+
+        str +="Total key non-coreference links\t"+totalKeyNonCoreferenceLinks+"\n";
+        str +="Total response non-coreference links\t"+totalResponseNonCoreferenceLinks+"\n";
+        str +="Correct non-coreference links\t"+ totalCorrectNonCoreferenceLinks+"\n";
 
         str += "\n";
         double mentionRecall = recallTotalMentions/resultFiles.size();
@@ -377,11 +393,23 @@ public class CollectResults {
                                     //System.out.println("recall = " + recall);
                                     try {
                                         totalCorrectCoreferences += Double.parseDouble(correct);
+                                        if (inputLine.startsWith("Coreference links:")) {
+                                           totalCorrectCoreferenceLinks +=  Double.parseDouble(correct);
+                                        }
+                                        else if (inputLine.startsWith("Non-coreference links:")) {
+                                            totalCorrectNonCoreferenceLinks +=  Double.parseDouble(correct);
+                                        }
                                     } catch (NumberFormatException e) {
                                         e.printStackTrace();
                                     }
                                     try {
                                         totalKeyCoreferenceSets += Double.parseDouble(recall);
+                                        if (inputLine.startsWith("Coreference links:")) {
+                                            totalKeyCoreferenceLinks +=  Double.parseDouble(correct);
+                                        }
+                                        else if (inputLine.startsWith("Non-coreference links:")) {
+                                            totalKeyNonCoreferenceLinks +=  Double.parseDouble(correct);
+                                        }
                                     } catch (NumberFormatException e) {
                                         e.printStackTrace();
                                     }
@@ -395,6 +423,12 @@ public class CollectResults {
                                     //System.out.println("precision = " + precision);
                                     try {
                                         totalResponseCoreferenceSets += Double.parseDouble(precision);
+                                        if (inputLine.startsWith("Coreference links:")) {
+                                            totalResponseCoreferenceLinks +=  Double.parseDouble(precision);
+                                        }
+                                        else if (inputLine.startsWith("Non-coreference links:")) {
+                                            totalResponseNonCoreferenceLinks +=  Double.parseDouble(precision);
+                                        }
                                     } catch (NumberFormatException e) {
                                         e.printStackTrace();
                                     }
