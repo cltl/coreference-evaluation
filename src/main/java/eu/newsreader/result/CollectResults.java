@@ -52,8 +52,8 @@ public class CollectResults {
                 extension = args[i+1];
             }
         }
-       // pathToResponseFolder = "/Users/piek/Desktop/NWR/NWR-benchmark/coreference/corpus_CONLL/corpus_airbus/events/response";
-       // extension = ".result";
+        pathToResponseFolder = "/Users/piek/Desktop/NWR/NWR-benchmark/coreference/corpus_CONLL-lemma/corpus_airbus/events/response";
+        extension = ".result";
         String pathToResultFile = new File(pathToResponseFolder).getParent()+"/"+"results.csv";
         ArrayList<File> resultFiles = Util.makeFlatFileList(new File(pathToResponseFolder), extension);
         for (int i = 0; i < resultFiles.size(); i++) {
@@ -95,11 +95,11 @@ public class CollectResults {
         str += "Coreference\t"+coreferenceRecall+"\t"+coreferencePrecision+"\t"+coreferenceF+"\n";
         str += "\n";
 
-        mentionRecall = (totalKeyMentions-totalMissedMentions)/(double)totalKeyMentions;
-        mentionPrecision = (totalResponseMentions-totalInventedMentions)/(double)totalResponseMentions;
+        mentionRecall = 100*(totalKeyMentions-totalMissedMentions)/(double)totalKeyMentions;
+        mentionPrecision = 100*(totalResponseMentions-totalInventedMentions)/(double)totalResponseMentions;
         mentionF = 2*(mentionRecall*mentionPrecision)/(mentionRecall+mentionPrecision);
-        coreferenceRecall = totalCorrectCoreferences/(double)totalKeyCoreferenceSets;
-        coreferencePrecision = totalCorrectCoreferences/(double)totalResponseCoreferenceSets;
+        coreferenceRecall = 100*totalCorrectCoreferences/(double)totalKeyCoreferenceSets;
+        coreferencePrecision = 100*totalCorrectCoreferences/(double)totalResponseCoreferenceSets;
         coreferenceF = 2*(coreferenceRecall*coreferencePrecision)/(coreferenceRecall+coreferencePrecision);
 
         str += "\n";
@@ -379,7 +379,6 @@ public class CollectResults {
                                 ) {
                             //Coreference links: Recall: (1 / 1) 100%	Precision: (1 / 17) 5.88%	F1: 11.11%
                             //Non-coreference links: Recall: (95 / 135) 70.37%	Precision: (95 / 308) 30.84%	F1: 42.88%
-                            //BLANC: Recall: (0.851851851851852 / 1) 85.18%	Precision: (0.183632543926662 / 1) 18.36%	F1: 27%
 
                             String [] fields = inputLine.split("%");
                             if (fields.length>=3) {
@@ -405,10 +404,10 @@ public class CollectResults {
                                     try {
                                         totalKeyCoreferenceSets += Double.parseDouble(recall);
                                         if (inputLine.startsWith("Coreference links:")) {
-                                            totalKeyCoreferenceLinks +=  Double.parseDouble(correct);
+                                            totalKeyCoreferenceLinks +=  Double.parseDouble(recall);
                                         }
                                         else if (inputLine.startsWith("Non-coreference links:")) {
-                                            totalKeyNonCoreferenceLinks +=  Double.parseDouble(correct);
+                                            totalKeyNonCoreferenceLinks +=  Double.parseDouble(recall);
                                         }
                                     } catch (NumberFormatException e) {
                                         e.printStackTrace();
