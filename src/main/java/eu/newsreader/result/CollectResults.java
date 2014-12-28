@@ -52,8 +52,8 @@ public class CollectResults {
                 extension = args[i+1];
             }
         }
-        pathToResponseFolder = "/Users/piek/Desktop/NWR/NWR-benchmark/coreference/corpus_CONLL-lemma/corpus_airbus/events/response";
-        extension = ".result";
+       // pathToResponseFolder = "/Users/piek/Desktop/NWR/NWR-benchmark/coreference/corpus_CONLL-lemma/corpus_airbus/events/response";
+       // extension = ".result";
         String pathToResultFile = new File(pathToResponseFolder).getParent()+"/"+"results.csv";
         ArrayList<File> resultFiles = Util.makeFlatFileList(new File(pathToResponseFolder), extension);
         for (int i = 0; i < resultFiles.size(); i++) {

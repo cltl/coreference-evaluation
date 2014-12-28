@@ -113,7 +113,10 @@ public class NafCoref extends DefaultHandler {
             }
             String coid = coreferenceSet.getCoid();
             if (coid.startsWith("coevent")) {
-                coreferenceSet.setCoid(coid.substring(7));
+                String id = coid.substring(7);
+                id = id.replace("_", "1000");
+                coreferenceSet.setCoid(id);
+
             }
             else if (coid.startsWith("co")) {
                 coreferenceSet.setCoid(coid.substring(3));
