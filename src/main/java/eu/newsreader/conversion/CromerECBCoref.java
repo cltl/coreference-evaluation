@@ -4,6 +4,7 @@ import eu.kyotoproject.kaf.CorefTarget;
 import eu.kyotoproject.kaf.KafCoreferenceSet;
 import eu.kyotoproject.kaf.KafTerm;
 import eu.kyotoproject.kaf.KafWordForm;
+import eu.newsreader.util.Util;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -12,7 +13,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
-import eu.newsreader.util.Util;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -32,7 +32,7 @@ import java.util.Set;
 /**
  * Created by piek on 12/15/14.
  */
-public class CatCoref extends DefaultHandler {
+public class CromerECBCoref extends DefaultHandler {
 
     /**
      * <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -49,35 +49,93 @@ public class CatCoref extends DefaultHandler {
 
      */
     /*
-    <Document doc_name="3806_Apple_unveils_new_Intel-based_Mac.txt">
-<token t_id="1" sentence="0" number="0">Apple</token>
-<token t_id="2" sentence="0" number="1">unveils</token>
-<token t_id="3" sentence="0" number="2">new</token>
-<token t_id="4" sentence="0" number="3">Intel-based</token>
-<token t_id="5" sentence="0" number="4">Mac</token>
+   <Document doc_name="1_1ecb.xml" doc_id="DOC15653231215902085">
+<token t_id="1" sentence="0" number="0">Another</token>
+<token t_id="2" sentence="0" number="1">day</token>
+<token t_id="3" sentence="0" number="2">in</token>
+<token t_id="4" sentence="0" number="3">Hollywood</token>
+<token t_id="5" sentence="0" number="4">;</token>
+<token t_id="6" sentence="0" number="5">another</token>
+<token t_id="7" sentence="0" number="6">star</token>
+<token t_id="8" sentence="0" number="7">in</token>
+<token t_id="9" sentence="0" number="8">rehab</token>
+<token t_id="10" sentence="0" number="9">.</token>
 
-<token t_id="44" sentence="3" number="43">be</token>
+<HUMAN_PART_PER m_id="32"  >
+  <token_anchor t_id="81"/>
+  <token_anchor t_id="82"/>
+</HUMAN_PART_PER>
+<HUMAN_PART_PER m_id="33"  >
+  <token_anchor t_id="85"/>
+</HUMAN_PART_PER>
+<HUMAN_PART_PER m_id="18"  >
+  <token_anchor t_id="22"/>
+  <token_anchor t_id="23"/>
+</HUMAN_PART_PER>
+<HUMAN_PART_PER m_id="25"  >
+  <token_anchor t_id="74"/>
+</HUMAN_PART_PER>
+<LOC_FAC m_id="37"  >
+  <token_anchor t_id="88"/>
+  <token_anchor t_id="89"/>
+</LOC_FAC>
+<LOC_FAC m_id="22"  >
+  <token_anchor t_id="47"/>
+  <token_anchor t_id="48"/>
+  <token_anchor t_id="49"/>
+  <token_anchor t_id="50"/>
+  <token_anchor t_id="51"/>
+  <token_anchor t_id="52"/>
+  <token_anchor t_id="53"/>
+  <token_anchor t_id="54"/>
+</LOC_FAC>
+<LOC_FAC m_id="23"  >
+  <token_anchor t_id="58"/>
+</LOC_FAC>
+<NON_HUMAN_PART m_id="26"  >
+  <token_anchor t_id="31"/>
+  <token_anchor t_id="32"/>
+</NON_HUMAN_PART>
 
-<EVENT_MENTION m_id="31" time="NON_FUTURE" special_cases="GEN" aspect="NONE"
-certainty="POSSIBLE" polarity="POS" tense="INFINITIVE" modality="" pred="be" comment="" pos="VERB"  >
-<token_anchor t_id="44"/>
-</EVENT_MENTION>
-<EVENT_MENTION m_id="69" time="NON_FUTURE" special_cases="NONE" aspect="NONE"
-certainty="CERTAIN" polarity="POS" tense="PRESENT" modality="" pred="unveil" comment="" pos="VERB"  >
-<token_anchor t_id="2"/>
-</EVENT_MENTION>
 
-<EVENT m_id="52" RELATED_TO="" TAG_DESCRIPTOR="fast" class="OTHER" comment="" external_ref="" />
-<EVENT m_id="53" RELATED_TO="" TAG_DESCRIPTOR="be" class="GRAMMATICAL" comment="" external_ref="" />
-<EVENT m_id="54" RELATED_TO="" TAG_DESCRIPTOR="use" class="OTHER" comment="" external_ref="" />
+<ACTION_OCCURRENCE m_id="28"  >
+  <token_anchor t_id="35"/>
+</ACTION_OCCURRENCE>
+<ACTION_OCCURRENCE m_id="29"  >
+  <token_anchor t_id="46"/>
+</ACTION_OCCURRENCE>
+<ACTION_OCCURRENCE m_id="35"  >
+  <token_anchor t_id="87"/>
+</ACTION_OCCURRENCE>
+<ACTION_OCCURRENCE m_id="24"  >
+  <token_anchor t_id="69"/>
+</ACTION_OCCURRENCE>
+<ACTION_REPORTING m_id="31"  >
+  <token_anchor t_id="77"/>
+</ACTION_REPORTING>
+<ACTION_REPORTING m_id="20"  >
+  <token_anchor t_id="12"/>
+</ACTION_REPORTING>
 
-<REFERS_TO r_id="243207" comment="" >
-<source m_id="31" />
-<target m_id="53" />
-</REFERS_TO>
+<ACTION_OCCURRENCE m_id="50" RELATED_TO="" TAG_DESCRIPTOR="t1b_checking_in_promises" instance_id="ACT16236402809085484" />
+<ACTION_OCCURRENCE m_id="49" RELATED_TO="" TAG_DESCRIPTOR="t1b_starred_american_pie" instance_id="ACT16284692120891174" />
+<HUMAN_PART_PER m_id="48" RELATED_TO="" TAG_DESCRIPTOR="t1b_rep" instance_id="HUM16284637796168708" />
+<HUMAN_PART_ORG m_id="47" RELATED_TO="" TAG_DESCRIPTOR="t1b_people" instance_id="HUM16236907954762763" />
+<HUMAN_PART_PER m_id="46" RELATED_TO="" TAG_DESCRIPTOR="t1b_tara_reid" instance_id="HUM16236184328979740" />
+<LOC_FAC m_id="45" RELATED_TO="" TAG_DESCRIPTOR="t1b_promises_maliby" instance_id="LOC16235213289813758" />
+<ACTION_REPORTING m_id="44" RELATED_TO="" TAG_DESCRIPTOR="t1b_people_reports" instance_id="ACT16236892266224146" />
+<ACTION_REPORTING m_id="43" RELATED_TO="" TAG_DESCRIPTOR="t1b_publicist_statement_reid_in_rehab_and_respect_privacy" instance_id="ACT16235311629112331" />
+</Markables>
+
+<Relations>
+<CROSS_DOC_COREF r_id="37538" note="ACT16235311629112331" >
+  <source m_id="41" />
+  <target m_id="43" />
+</CROSS_DOC_COREF>
 
      */
     String value = "";
+    static public HashMap<String, String> crossDocIdMap;
     static public HashMap<String, KafCoreferenceSet> coreferenceHashMap;
     static public ArrayList<KafCoreferenceSet> kafCoreferenceSetArrayList;
     ArrayList<CorefTarget> corefTargetArrayList;
@@ -90,11 +148,13 @@ certainty="CERTAIN" polarity="POS" tense="PRESENT" modality="" pred="unveil" com
     static public ArrayList<KafTerm> kafTermArrayList;
     ArrayList<String> spans;
     String span = "";
+    String crossDocId = "";
     String target = "";
     boolean REFERSTO = false;
 
     void init() {
         value = "";
+        crossDocIdMap = new HashMap<String, String>();
         coreferenceHashMap = new HashMap<String, KafCoreferenceSet>();
         kafCoreferenceSetArrayList = new ArrayList<KafCoreferenceSet>();
         corefTargetArrayList = new ArrayList<CorefTarget>();
@@ -119,6 +179,7 @@ certainty="CERTAIN" polarity="POS" tense="PRESENT" modality="" pred="unveil" com
             InputSource inp = new InputSource (new FileReader(filePath));
             parser.parse(inp, this);
             switchToTokenIds();
+            useCrossDocIds();
 
         } catch (SAXParseException err) {
             myerror = "\n** Parsing error" + ", line " + err.getLineNumber()
@@ -149,23 +210,19 @@ certainty="CERTAIN" polarity="POS" tense="PRESENT" modality="" pred="unveil" com
             kafWordForm = new KafWordForm();
             kafWordForm.setWid(attributes.getValue("t_id"));
             Integer sentenceInt = Integer.parseInt(attributes.getValue("sentence"));
-            /// HACK TO MAKE SENTENCE ID EQUAL TO SENTENCE ID OF WIKINEWS NAF GENERATED BY FBK
-            sentenceInt++;
             kafWordForm.setSent(sentenceInt.toString());
         }
-        else if (qName.equalsIgnoreCase("EVENT")) {
-            String type = attributes.getValue("class");
+        else if (qName.startsWith("ACTION_")) {
+            String type = qName;
             String mention = attributes.getValue("m_id");
             if (type!=null && mention!=null && !type.isEmpty() && !mention.isEmpty()) {
                 eventMentionTypeMap.put(mention, type);
             }
-        }
-        else if (qName.equalsIgnoreCase("EVENT_MENTION")) {
             kafTerm = new KafTerm();
             kafTerm.setType("EVENT");
             kafTerm.setTid(attributes.getValue("m_id"));
         }
-        else if (qName.equalsIgnoreCase("ENTITY_MENTION")) {
+        else if (qName.indexOf("_PAR_")>-1) {
             kafTerm = new KafTerm();
             kafTerm.setType("ENTITY");
             kafTerm.setTid(attributes.getValue("m_id"));
@@ -183,28 +240,46 @@ certainty="CERTAIN" polarity="POS" tense="PRESENT" modality="" pred="unveil" com
             if (REFERSTO) {
                 /// sources and targets can also occur for other relations than refersto
                 target = attributes.getValue("m_id");
-/*
-                corefTarget = new CorefTarget();
-                corefTarget.setId(attributes.getValue("m_id"));
-                corefTargetArrayList.add(corefTarget);
-*/
+                if (!crossDocId.isEmpty()) {
+                   crossDocIdMap.put(target, crossDocId);
+                }
             }
         }
         else if (qName.equalsIgnoreCase("token_anchor")) {
             span = attributes.getValue("t_id");
             kafTerm.addSpans(span);
         }
-        else if (qName.equalsIgnoreCase("REFERS_TO")) {
+        else if (qName.equalsIgnoreCase("CROSS_DOC_COREF") ||
+                 qName.equalsIgnoreCase("INTRA_DOC_COREF")) {
             REFERSTO = true;
             corefTargetArrayList = new ArrayList<CorefTarget>();
             target = "";
-            /// it appears that these do not make a unique coreference set
-            // kafCoreferenceSet = new KafCoreferenceSet();
-            // kafCoreferenceSet.setCoid(attributes.getValue("r_id"));
+            if (qName.equalsIgnoreCase("CROSS_DOC_COREF")) {
+                crossDocId = fixCrossDocId(attributes.getValue("note"));
+            }
+            else {
+                crossDocId = "";
+            }
         }
         value = "";
     }//--startElement
 
+    String fixCrossDocId (String id) {
+        final String charString = "abcdefghijklmnopqrstuvwxyz";
+        String str = "";
+        for (int i = 0; i < id.length(); i++) {
+            char c = id.toLowerCase().charAt(i);
+            int idx = charString.indexOf(c);
+            if (idx>-1) {
+                str += idx+1;
+            }
+            else {
+               str += c;
+            }
+        }
+        //System.out.println("str = " + str);
+        return str;
+    }
 
     public void endElement(String uri, String localName, String qName)
             throws SAXException {
@@ -213,15 +288,16 @@ certainty="CERTAIN" polarity="POS" tense="PRESENT" modality="" pred="unveil" com
             kafWordFormArrayList.add(kafWordForm);
             kafWordForm = new KafWordForm();
         }
-        else if (qName.equalsIgnoreCase("EVENT_MENTION")) {
+        else if (qName.startsWith("ACTION_")) {
             kafTermArrayList.add(kafTerm);
             kafTerm = new KafTerm();
         }
-        else if (qName.equalsIgnoreCase("ENTITY_MENTION")) {
+        else if (qName.indexOf("_PAR_")>-1) {
             kafTermArrayList.add(kafTerm);
             kafTerm = new KafTerm();
         }
-        else if (qName.equalsIgnoreCase("REFERS_TO")) {
+        else if (qName.equalsIgnoreCase("CROSS_DOC_COREF") ||
+                qName.equalsIgnoreCase("INTRA_DOC_COREF")) {
             REFERSTO = false;
             String type = "";
             if (eventMentionTypeMap.containsKey(target)) {
@@ -250,6 +326,15 @@ certainty="CERTAIN" polarity="POS" tense="PRESENT" modality="" pred="unveil" com
         }
     }
 
+    public void useCrossDocIds () {
+        for (int i = 0; i < kafCoreferenceSetArrayList.size(); i++) {
+            KafCoreferenceSet coreferenceSet = kafCoreferenceSetArrayList.get(i);
+            if (crossDocIdMap.containsKey(coreferenceSet.getCoid())) {
+                crossDocId = crossDocIdMap.get(coreferenceSet.getCoid());
+                coreferenceSet.setCoid(crossDocId);
+            }
+        }
+    }
 
     public void switchToTokenIds () {
         Set keySet = coreferenceHashMap.keySet();
@@ -307,6 +392,9 @@ certainty="CERTAIN" polarity="POS" tense="PRESENT" modality="" pred="unveil" com
         // System.out.println("tagValue:"+value);
     }
 
+    /**
+        NEED TO CHECK THIS
+    */
     public void serializeToCorefSet (OutputStream stream, String corpus, String type) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -357,12 +445,12 @@ certainty="CERTAIN" polarity="POS" tense="PRESENT" modality="" pred="unveil" com
         // type = "EVENT-SPEECH_COGNITIVE";
         // type = "EVENT-OTHER";
         // type = "ENTITY";
-        //pathToCatFile = "/Users/piek/Desktop/NWR/NWR-benchmark/coreference/corpus_CAT_GS_201412/corpus_apple/9549_Reactions_to_Apple.xml";
+        type = "EVENT";
+        pathToCatFile = "/Users/piek/Desktop/NWR/ECB+_LREC2014/ECB+/1/1_1ecb.xml";
         //folder = "/Users/piek/Desktop/NWR/NWR-benchmark/coreference/corpus_CAT_GS_201412/corpus_apple/";
-        ///Users/piek/Desktop/NWR/NWR-Annotation/corpus_CAT_ref/corpus_apple
-        //fileExtension = ".xml";
-        //format = "conll";
-        CatCoref catCoref = new CatCoref();
+        fileExtension = ".xml";
+        format = "conll";
+        CromerECBCoref catCoref = new CromerECBCoref();
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
             if (arg.equalsIgnoreCase("--cat-file") && args.length > (i + 1)) {
@@ -433,7 +521,6 @@ certainty="CERTAIN" polarity="POS" tense="PRESENT" modality="" pred="unveil" com
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                //break;
             }
         }
     }

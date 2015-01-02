@@ -157,7 +157,7 @@ public class CoNLL {
             String corefId = "";
             for (int i = 0; i < kafCoreferenceSetArrayList.size(); i++) {
                 KafCoreferenceSet corefSet  = kafCoreferenceSetArrayList.get(i);
-                // System.out.println("coref.getType() = " + corefSet.getType());
+                //System.out.println("coref.getType() = " + corefSet.getType());
                 if (type.isEmpty() || corefSet.getType().toLowerCase().startsWith(type.toLowerCase())) {
                     for (int j = 0; j < corefSet.getSetsOfSpans().size(); j++) {
                         ArrayList<CorefTarget> corefTargets = corefSet.getSetsOfSpans().get(j);
@@ -165,8 +165,7 @@ public class CoNLL {
                             CorefTarget corefTarget = corefTargets.get(k);
                             if (corefTarget.getId().equals(tokenId)) {
                                 corefId = corefSet.getCoid();
-                                //System.out.println("corefTarget.getId() = " + corefTarget.getId());
-                                //System.out.println("tokenId = " + tokenId);
+                               // System.out.println("corefId = " + corefId);
                                 break;
                             }
                         }
