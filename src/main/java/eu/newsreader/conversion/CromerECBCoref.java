@@ -445,11 +445,11 @@ public class CromerECBCoref extends DefaultHandler {
         // type = "EVENT-SPEECH_COGNITIVE";
         // type = "EVENT-OTHER";
         // type = "ENTITY";
-        type = "EVENT";
-        pathToCatFile = "/Users/piek/Desktop/NWR/ECB+_LREC2014/ECB+/1/1_1ecb.xml";
+        //type = "EVENT";
+        //pathToCatFile = "/Users/piek/Desktop/NWR/ECB+_LREC2014/ECB+/1/1_1ecb.xml";
         //folder = "/Users/piek/Desktop/NWR/NWR-benchmark/coreference/corpus_CAT_GS_201412/corpus_apple/";
-        fileExtension = ".xml";
-        format = "conll";
+        //fileExtension = ".xml";
+        //format = "conll";
         CromerECBCoref catCoref = new CromerECBCoref();
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
