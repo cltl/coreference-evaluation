@@ -119,16 +119,21 @@ public class NafCoref extends DefaultHandler {
 
             }
             else if (coid.startsWith("co")) {
-                coreferenceSet.setCoid(coid.substring(3));
+                coreferenceSet.setCoid(coid.substring(2));
             }
-            // System.out.println("coreferenceSet.getType() = " + coreferenceSet.getType());
+           // System.out.println("coreferenceSet.getCoid() = " + coreferenceSet.getCoid());
+           // System.out.println("coreferenceSet.getType() = " + coreferenceSet.getType());
+            ArrayList<ArrayList<CorefTarget>> newSetsOfSpans = new ArrayList<ArrayList<CorefTarget>>();
             for (int j = 0; j < coreferenceSet.getSetsOfSpans().size(); j++) {
                 ArrayList<CorefTarget> corefTargets = coreferenceSet.getSetsOfSpans().get(j);
+                ArrayList<CorefTarget> newCorefTargets = new ArrayList<CorefTarget>();
                 for (int k = 0; k < corefTargets.size(); k++) {
                     CorefTarget target = corefTargets.get(k);
                     for (int l = 0; l < kafSaxParser.kafTermList.size(); l++) {
                         KafTerm term = kafSaxParser.kafTermList.get(l);
                         if (term.getTid().equals(target.getId())) {
+                            //// we are assuming here that terms have only a single token as span
+/*
                             String tokenId = term.getSpans().get(0);
                             for (int w = 0; w < kafSaxParser.kafWordFormList.size(); w++) {
                                 KafWordForm wordForm = kafSaxParser.kafWordFormList.get(w);
@@ -137,10 +142,25 @@ public class NafCoref extends DefaultHandler {
                                     break;
                                 }
                             }
+*/
+                            for (int m = 0; m < term.getSpans().size(); m++) {
+                                String tokenId = term.getSpans().get(m);
+                                for (int w = 0; w < kafSaxParser.kafWordFormList.size(); w++) {
+                                    KafWordForm wordForm = kafSaxParser.kafWordFormList.get(w);
+                                    if (wordForm.getWid().equals(tokenId)) {
+                                        CorefTarget newTarget = new CorefTarget();
+                                        newTarget.setId(tokenId);
+                                        newTarget.setTokenString(wordForm.getWf());
+                                        newCorefTargets.add(newTarget);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
+                newSetsOfSpans.add(newCorefTargets);
             }
+            coreferenceSet.setSetsOfSpans(newSetsOfSpans);
         }
     }
 
