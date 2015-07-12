@@ -24,7 +24,7 @@ public class ReduceConllKey {
                 }
             }
 
-            ArrayList<File> keyFiles = Util.makeFlatFileList(new File(pathToKeyFolder));
+            ArrayList<File> keyFiles = Util.makeRecursiveFileList(new File(pathToKeyFolder));
             for (int i = 0; i < keyFiles.size(); i++) {
                 File keyFile = keyFiles.get(i);
                // System.out.println("keyFile = " + keyFile);

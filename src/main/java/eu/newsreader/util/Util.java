@@ -7,6 +7,77 @@ import java.util.ArrayList;
  * Created by piek on 12/15/14.
  */
 public class Util {
+
+
+    static public ArrayList<File> makeFolderList(File inputFile) {
+        ArrayList<File> folderList = new ArrayList<File>();
+        File[] theFileList = null;
+        if ((inputFile.canRead()) && inputFile.isDirectory()) {
+            theFileList = inputFile.listFiles();
+            for (int i = 0; i < theFileList.length; i++) {
+                File newFile = theFileList[i];
+                if (newFile.isDirectory()) {
+                    folderList.add(newFile);
+                }
+            }
+        } else {
+            System.out.println("Cannot access file:" + inputFile + "#");
+            if (!inputFile.exists()) {
+                System.out.println("File does not exist!");
+            }
+        }
+        return folderList;
+    }
+
+
+    static public ArrayList<File> makeRecursiveFileList(File inputFile, String theFilter) {
+        ArrayList<File> acceptedFileList = new ArrayList<File>();
+        File[] theFileList = null;
+        if ((inputFile.canRead())) {
+            theFileList = inputFile.listFiles();
+            for (int i = 0; i < theFileList.length; i++) {
+                File newFile = theFileList[i];
+                if (newFile.isDirectory()) {
+                    ArrayList<File> nextFileList = makeRecursiveFileList(newFile, theFilter);
+                    acceptedFileList.addAll(nextFileList);
+                } else {
+                    if (newFile.getName().endsWith(theFilter)) {
+                        acceptedFileList.add(newFile);
+                    }
+                }
+            }
+        } else {
+            System.out.println("Cannot access file:" + inputFile + "#");
+            if (!inputFile.exists()) {
+                System.out.println("File/folder does not exist!");
+            }
+        }
+        return acceptedFileList;
+    }
+
+    static public ArrayList<File> makeRecursiveFileList(File inputFile) {
+        ArrayList<File> acceptedFileList = new ArrayList<File>();
+        File[] theFileList = null;
+        if ((inputFile.canRead())) {
+            theFileList = inputFile.listFiles();
+            for (int i = 0; i < theFileList.length; i++) {
+                File newFile = theFileList[i];
+                if (newFile.isDirectory()) {
+                    ArrayList<File> nextFileList = makeRecursiveFileList(newFile);
+                    acceptedFileList.addAll(nextFileList);
+                } else {
+                    acceptedFileList.add(newFile);
+                }
+            }
+        } else {
+            System.out.println("Cannot access file:" + inputFile + "#");
+            if (!inputFile.exists()) {
+                System.out.println("File/folder does not exist!");
+            }
+        }
+        return acceptedFileList;
+    }
+
     static public ArrayList<File> makeFlatFileList(File inputFile, String theFilter) {
         ArrayList<File> acceptedFileList = new ArrayList<File>();
         File[] theFileList = null;
