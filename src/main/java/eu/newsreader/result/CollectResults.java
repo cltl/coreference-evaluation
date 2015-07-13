@@ -55,7 +55,7 @@ public class CollectResults {
        // pathToResponseFolder = "/Users/piek/Desktop/NWR/NWR-benchmark/coreference/corpus_CONLL-lemma/corpus_airbus/events/response";
        // extension = ".result";
         String pathToResultFile = new File(pathToResponseFolder).getParent()+"/"+"results.csv";
-        ArrayList<File> resultFiles = Util.makeFlatFileList(new File(pathToResponseFolder), extension);
+        ArrayList<File> resultFiles = Util.makeRecursiveFileList(new File(pathToResponseFolder), extension);
         for (int i = 0; i < resultFiles.size(); i++) {
             File resultFile = resultFiles.get(i);
             readResultFile(resultFile);
@@ -66,8 +66,8 @@ public class CollectResults {
         str += "Date\t"+date.toString()+"\n\n";
         str +="Total key mentions\t"+totalKeyMentions+"\n";
         str +="Total response mentions\t"+totalResponseMentions+"\n";
-        str +="Total missed mentions\t"+totalInventedMentions+"\n";
-        str +="Total invented mentions\t"+totalMissedMentions+"\n";
+        str +="Total missed mentions\t"+totalMissedMentions+"\n";
+        str +="Total invented mentions\t"+totalInventedMentions+"\n";
         str +="Strictly correct identified mentions\t"+totalStrictlyCorrect+"\n";
         str +="Partially correct identified mentions\t"+totalPartiallyCorrect+"\n";
         str +="Total key reference links\t"+totalKeyCoreferenceSets+"\n";

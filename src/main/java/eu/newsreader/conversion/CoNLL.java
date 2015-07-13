@@ -71,12 +71,12 @@ public class CoNLL {
             this.singletons+=n;
         }
 
-        public String toString() {
-            String str = "# coref sets\t"+this.getnCorefSets()+"\n";
-            str += "# singletons\t"+this.getSingletons()+"\n";
-            str += "# multitons\t"+this.getMultitons()+"\n";
-            str += "Average mentions\t"+this.getAverageMentions()+"\n";
-            str += "Average lemmas\t"+this.getAvergageLemmas()+"\n";
+        public String toString(String key) {
+            String str = key+" # coref sets\t"+this.getnCorefSets()+"\n";
+            str += key + " # singletons\t"+this.getSingletons()+"\n";
+            str += key + " # multitons\t"+this.getMultitons()+"\n";
+            str += key+ " Average mentions\t"+this.getAverageMentions()+"\n";
+            str += key + " Average lemmas\t"+this.getAvergageLemmas()+"\n";
             return str;
         }
     }
@@ -112,9 +112,9 @@ public class CoNLL {
                 File file = responseFiles.get(i);
                 readCorefSetFromCoNLL(file, fos, corefResponseStatistics, "response");
             }
-            String str = "KEY:\n"+corefKeyStatistics.toString();
+            String str = "KEY:\n"+corefKeyStatistics.toString("KEY");
             fos.write(str.getBytes());
-            str = "RESPONSE:\n"+corefResponseStatistics.toString();
+            str = "RESPONSE:\n"+corefResponseStatistics.toString("RESPONSE");
             fos.write(str.getBytes());
             fos.close();
         } catch (IOException e) {
