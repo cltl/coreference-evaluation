@@ -50,6 +50,7 @@ public class MakeOverviewResult {
             String pathToFolder = "";
             String method = "";
             String threshold = "";
+            String type = "";
             for (int i = 0; i < args.length; i++) {
                 String arg = args[i];
                 if (arg.equals("--folder") && args.length>(i+1)) {
@@ -60,6 +61,9 @@ public class MakeOverviewResult {
                 }
                 else if (arg.equals("--threshold") && args.length>(i+1)) {
                     threshold = args[i+1];
+                }
+                else if (arg.equals("--type") && args.length>(i+1)) {
+                    type = args[i+1];
                 }
             }
             recallMacroString = "Macro average recall "+threshold+"-"+method+"\tMentions\tCoreference"+"\n";
@@ -75,29 +79,25 @@ public class MakeOverviewResult {
             for (int i = 0; i < corpora.size(); i++) {
                 File corpus = corpora.get(i);
                 File resultFile = new File (corpus.getAbsolutePath()+"/"+"results.csv");
-                readResultsCsv(resultFile, method);
+                if (!type.isEmpty()) {
+                    resultFile = new File (corpus.getAbsolutePath()+"/"+type+"/"+"results.csv");
+                }
+                readResultsCsv(resultFile, method, corpus.getName());
                 File overviewFile = new File (corpus.getAbsolutePath()+"/"+"corefOverview.csv");
+                if (!type.isEmpty()) {
+                    overviewFile = new File (corpus.getAbsolutePath()+"/"+type+"/"+"corefOverview.csv");
+                }
                 readOverviewCsv(overviewFile);
             }
-            recallMacroString += "Average\t"+method+"\t"+averageMacroRecall/corpora.size()+"\t"+averageMentionsMacroRecall/corpora.size()+"\n\n";
-            precisionMacroString += "Average\t"+method+"\t"+averageMacroPrecision/corpora.size()+"\t"+averageMentionsMacroPrecision/corpora.size()+"\n\n";
-            fmeasureMacroString += "Average\t"+method+"\t"+averageMacroF/corpora.size()+"\t"+averageMentionsMacroF/corpora.size()+"\n\n";
+            recallMacroString += "Average\t"+method+"\t"+averageMentionsMacroRecall/corpora.size()+"\t"+averageMacroRecall/corpora.size()+"\n\n";
+            precisionMacroString += "Average\t"+method+"\t"+averageMentionsMacroPrecision/corpora.size()+"\t"+averageMacroPrecision/corpora.size()+"\n\n";
+            fmeasureMacroString += "Average\t"+method+"\t"+averageMentionsMacroF/corpora.size()+"\t"+averageMacroF/corpora.size()+"\n\n";
 
-/*
-            recallMacroString += "Average_mentions\t"+method+"\t"+averageMentionsMacroRecall/corpora.size()+"\n\n";
-            precisionMacroString += "Average_mentions\t"+method+"\t"+averageMentionsMacroPrecision/corpora.size()+"\n\n";
-            fmeasureMacroString += "Average_mentions\t"+method+"\t"+averageMentionsMacroF/corpora.size()+"\n\n";
-*/
 
-            recallMicroString += "Average\t"+method+"\t"+averageMicroRecall/corpora.size()+"\t"+averageMentionsMicroRecall/corpora.size()+"\n\n";
-            precisionMicroString += "Average\t"+method+"\t"+averageMicroPrecision/corpora.size()+"\t"+averageMentionsMicroPrecision/corpora.size()+"\n\n";
-            fmeasureMicroString += "Average\t"+method+"\t"+averageMicroF/corpora.size()+"\t"+averageMentionsMicroF/corpora.size()+"\n\n";
+            recallMicroString += "Average\t"+method+"\t"+averageMentionsMicroRecall/corpora.size()+"\t"+averageMicroRecall/corpora.size()+"\n\n";
+            precisionMicroString += "Average\t"+method+"\t"+averageMentionsMicroPrecision/corpora.size()+"\t"+averageMicroPrecision/corpora.size()+"\n\n";
+            fmeasureMicroString += "Average\t"+method+"\t"+averageMentionsMicroF/corpora.size()+"\t"+averageMicroF/corpora.size()+"\n\n";
 
-/*
-            recallMicroString += "Average_mentions\t"+method+"\t"+averageMentionsMicroRecall/corpora.size()+"\n\n";
-            precisionMicroString += "Average_mentions\t"+method+"\t"+averageMentionsMicroPrecision/corpora.size()+"\n\n";
-            fmeasureMicroString += "Average_mentions\t"+method+"\t"+averageMentionsMicroF/corpora.size()+"\n\n";
-*/
 
             fos.write(recallMacroString.getBytes());
             fos.write(precisionMacroString.getBytes());
@@ -112,7 +112,7 @@ public class MakeOverviewResult {
 
     }
 
-    static void readResultsCsv (File file, String method) {
+    static void readResultsCsv (File file, String method, String corpusName) {
         try {
             boolean MACRO = false;
             boolean MICRO = false;
@@ -120,7 +120,6 @@ public class MakeOverviewResult {
             InputStreamReader isr = new InputStreamReader(fis);
             BufferedReader in = new BufferedReader(isr);
             String inputLine = "";
-            String corpusName = file.getParentFile().getName();
             while (in.ready()&&(inputLine = in.readLine()) != null) {
                 if (inputLine.trim().startsWith("Macro")) {
                     MACRO = true;
