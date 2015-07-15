@@ -43,6 +43,7 @@ public class CollectResults {
     static public void main (String[] args) {
         String pathToResponseFolder = "";
         String extension = "";
+        String label = "";
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
             if (arg.equals("--result-folder") && (args.length>(i+1))) {
@@ -51,10 +52,11 @@ public class CollectResults {
             else if (arg.equals("--extension") && (args.length>(i+1))) {
                 extension = args[i+1];
             }
+            else if (arg.equals("--label") && (args.length>(i+1))) {
+                label = args[i+1];
+            }
         }
-       // pathToResponseFolder = "/Users/piek/Desktop/NWR/NWR-benchmark/coreference/corpus_CONLL-lemma/corpus_airbus/events/response";
-       // extension = ".result";
-        String pathToResultFile = new File(pathToResponseFolder).getParent()+"/"+"results.csv";
+        String pathToResultFile = new File(pathToResponseFolder).getParent()+"/"+label+"results.csv";
         ArrayList<File> resultFiles = Util.makeRecursiveFileList(new File(pathToResponseFolder), extension);
         for (int i = 0; i < resultFiles.size(); i++) {
             File resultFile = resultFiles.get(i);
@@ -64,23 +66,51 @@ public class CollectResults {
         String str = "";
         str = new File(pathToResponseFolder).getParent()+"\n";
         str += "Date\t"+date.toString()+"\n\n";
-        str +="Total key mentions\t"+totalKeyMentions+"\n";
-        str +="Total response mentions\t"+totalResponseMentions+"\n";
-        str +="Total missed mentions\t"+totalMissedMentions+"\n";
-        str +="Total invented mentions\t"+totalInventedMentions+"\n";
-        str +="Strictly correct identified mentions\t"+totalStrictlyCorrect+"\n";
-        str +="Partially correct identified mentions\t"+totalPartiallyCorrect+"\n";
-        str +="Total key reference links\t"+totalKeyCoreferenceSets+"\n";
-        str +="Total response reference links\t"+totalResponseCoreferenceSets+"\n";
-        str +="Correct reference links\t"+ totalCorrectCoreferences+"\n";
+        str +="MENTIONS (key mentions="+totalKeyMentions+")\n";
+        str +="# response mentions\t"+totalResponseMentions+"\n";
+        str +="# missed mentions\t"+totalMissedMentions+"\n";
+        str +="# invented mentions\t"+totalInventedMentions+"\n";
+        str +="# strictly correct identified mentions\t"+totalStrictlyCorrect+"\n";
+        str +="# partially correct identified mentions\t"+totalPartiallyCorrect+"\n";
+        double recall = (double) totalStrictlyCorrect/totalKeyMentions;
+        double precision = (double) totalStrictlyCorrect/totalResponseMentions;
+        double f1 = (double) 2*(recall*precision)/(recall+precision);
+        str +=" recall\t"+recall +"\n";
+        str +=" precision\t"+precision+"\n";
+        str +=" f1\t"+f1+"\n\n";
 
-        str +="Total key coreference links\t"+totalKeyCoreferenceLinks+"\n";
-        str +="Total response coreference links\t"+totalResponseCoreferenceLinks+"\n";
-        str +="Correct coreference links\t"+ totalCorrectCoreferenceLinks+"\n";
+        str += "REFERENCE (BLANC)\n";
+        str +="# reference links\t"+totalKeyCoreferenceSets+"\n";
+        str +="# response reference links\t"+totalResponseCoreferenceSets+"\n";
+        str +="# correct reference links\t"+ totalCorrectCoreferences+"\n";
+        recall = (double) totalCorrectCoreferences/(double)totalKeyCoreferenceSets;
+        precision = (double) totalCorrectCoreferences/(double)totalResponseCoreferenceSets;
+        f1 = (double) 2*(recall*precision)/(recall+precision);
+        str +=" recall\t"+recall +"\n";
+        str +=" precision\t"+precision+"\n";
+        str +=" f1\t"+f1+"\n\n";
 
-        str +="Total key non-coreference links\t"+totalKeyNonCoreferenceLinks+"\n";
-        str +="Total response non-coreference links\t"+totalResponseNonCoreferenceLinks+"\n";
-        str +="Correct non-coreference links\t"+ totalCorrectNonCoreferenceLinks+"\n";
+        str += "COREFERENCE\n";
+        str +="# key coreference links\t"+totalKeyCoreferenceLinks+"\n";
+        str +="# response coreference links\t"+totalResponseCoreferenceLinks+"\n";
+        str +="# correct coreference links\t"+ totalCorrectCoreferenceLinks+"\n";
+        recall = (double) totalCorrectCoreferenceLinks/(double)totalKeyCoreferenceLinks;
+        precision = (double) totalCorrectCoreferenceLinks/(double)totalResponseCoreferenceLinks;
+        f1 = (double) 2*(recall*precision)/(recall+precision);
+        str +=" recall\t"+recall +"\n";
+        str +=" precision\t"+precision+"\n";
+        str +=" f1\t"+f1+"\n\n";
+
+        str += "NOREFERENCE\n";
+        str +="# key non-coreference links\t"+totalKeyNonCoreferenceLinks+"\n";
+        str +="# response non-coreference links\t"+totalResponseNonCoreferenceLinks+"\n";
+        str +="# correct non-coreference links\t"+ totalCorrectNonCoreferenceLinks+"\n";
+        recall = (double) totalCorrectNonCoreferenceLinks/(double)totalKeyNonCoreferenceLinks;
+        precision =  (double)totalCorrectNonCoreferenceLinks/(double)totalResponseNonCoreferenceLinks;
+        f1 = (double) 2*(recall*precision)/(recall+precision);
+        str +=" recall\t"+recall +"\n";
+        str +=" precision\t"+precision+"\n";
+        str +=" f1\t"+f1+"\n\n";
 
         str += "\n";
         double mentionRecall = recallTotalMentions/resultFiles.size();
@@ -89,23 +119,17 @@ public class CollectResults {
         double coreferenceRecall = recallTotalCoreference/resultFiles.size();
         double coreferencePrecision = precisionTotalCoreference/resultFiles.size();
         double coreferenceF = f1TotalCoreference/resultFiles.size();
+
+        str += "Macro average coreference\n";
+        str += "recall\t"+coreferenceRecall+"\n";
+        str += "precision\t"+coreferencePrecision+"\n";
+        str += "f1\t"+coreferenceF+"\n";
         str += "\n";
         str += "Macro average\tRecall\tPrecision\tF1\n";
         str += "Identification of Mentions\t"+mentionRecall+"\t"+mentionPrecision+"\t"+mentionF+"\n";
         str += "Coreference\t"+coreferenceRecall+"\t"+coreferencePrecision+"\t"+coreferenceF+"\n";
         str += "\n";
 
-        mentionRecall = 100*(totalKeyMentions-totalMissedMentions)/(double)totalKeyMentions;
-        mentionPrecision = 100*(totalResponseMentions-totalInventedMentions)/(double)totalResponseMentions;
-        mentionF = 2*(mentionRecall*mentionPrecision)/(mentionRecall+mentionPrecision);
-        coreferenceRecall = 100*totalCorrectCoreferences/(double)totalKeyCoreferenceSets;
-        coreferencePrecision = 100*totalCorrectCoreferences/(double)totalResponseCoreferenceSets;
-        coreferenceF = 2*(coreferenceRecall*coreferencePrecision)/(coreferenceRecall+coreferencePrecision);
-
-        str += "\n";
-        str += "Micro average\tRecall\tPrecision\tF1\n";
-        str += "Identification of Mentions\t"+mentionRecall+"\t"+mentionPrecision+"\t"+mentionF+"\n";
-        str += "Coreference\t"+coreferenceRecall+"\t"+coreferencePrecision+"\t"+coreferenceF+"\n";
         try {
             OutputStream fos = new FileOutputStream(pathToResultFile);
             fos.write(str.getBytes());
