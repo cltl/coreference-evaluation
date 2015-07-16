@@ -50,7 +50,6 @@ public class MakeOverviewResult {
             String pathToFolder = "";
             String method = "";
             String threshold = "";
-            String type = "";
             for (int i = 0; i < args.length; i++) {
                 String arg = args[i];
                 if (arg.equals("--folder") && args.length>(i+1)) {
@@ -61,9 +60,6 @@ public class MakeOverviewResult {
                 }
                 else if (arg.equals("--threshold") && args.length>(i+1)) {
                     threshold = args[i+1];
-                }
-                else if (arg.equals("--type") && args.length>(i+1)) {
-                    type = args[i+1];
                 }
             }
             recallMacroString = "Macro average recall "+threshold+"-"+method+"\tMentions\tCoreference"+"\n";
@@ -78,16 +74,16 @@ public class MakeOverviewResult {
             ArrayList<File> corpora = Util.makeFolderList(resultFolder);
             for (int i = 0; i < corpora.size(); i++) {
                 File corpus = corpora.get(i);
-                File resultFile = new File (corpus.getAbsolutePath()+"/"+"results.csv");
-                if (!type.isEmpty()) {
-                    resultFile = new File (corpus.getAbsolutePath()+"/"+type+"/"+"results.csv");
+                ArrayList<File> results = Util.makeFlatFileList(corpus, "resuls.csv");
+                for (int j = 0; j < results.size(); j++) {
+                    File resultFile = results.get(j);
+                    readResultsCsv(resultFile, method, corpus.getName());
                 }
-                readResultsCsv(resultFile, method, corpus.getName());
-                File overviewFile = new File (corpus.getAbsolutePath()+"/"+"corefOverview.csv");
-                if (!type.isEmpty()) {
-                    overviewFile = new File (corpus.getAbsolutePath()+"/"+type+"/"+"corefOverview.csv");
+                ArrayList<File> overviewFiles = Util.makeFlatFileList(corpus, "corefOverview.csv");
+                for (int j = 0; j < overviewFiles.size(); j++) {
+                    File overviewFile = overviewFiles.get(j);
+                    readOverviewCsv(overviewFile);
                 }
-                readOverviewCsv(overviewFile);
             }
             recallMacroString += "Average\t"+method+"\t"+averageMentionsMacroRecall/corpora.size()+"\t"+averageMacroRecall/corpora.size()+"\n\n";
             precisionMacroString += "Average\t"+method+"\t"+averageMentionsMacroPrecision/corpora.size()+"\t"+averageMacroPrecision/corpora.size()+"\n\n";

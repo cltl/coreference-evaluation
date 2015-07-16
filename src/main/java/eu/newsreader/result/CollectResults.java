@@ -121,13 +121,10 @@ public class CollectResults {
         double coreferenceF = f1TotalCoreference/resultFiles.size();
 
         str += "Macro average coreference\n";
+        str += "Identification of Mentions\t"+mentionRecall+"\t"+mentionPrecision+"\t"+mentionF+"\n";
         str += "recall\t"+coreferenceRecall+"\n";
         str += "precision\t"+coreferencePrecision+"\n";
         str += "f1\t"+coreferenceF+"\n";
-        str += "\n";
-        str += "Macro average\tRecall\tPrecision\tF1\n";
-        str += "Identification of Mentions\t"+mentionRecall+"\t"+mentionPrecision+"\t"+mentionF+"\n";
-        str += "Coreference\t"+coreferenceRecall+"\t"+coreferencePrecision+"\t"+coreferenceF+"\n";
         str += "\n";
 
         try {
