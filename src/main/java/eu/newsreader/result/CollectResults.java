@@ -64,7 +64,7 @@ public class CollectResults {
         }
         Date date = new Date();
         String str = "";
-        str = new File(pathToResponseFolder).getParent()+"\n";
+        str = new File(pathToResponseFolder).getParent()+"\t"+label+"\n";
         str += "Date\t"+date.toString()+"\n\n";
         str +="MENTIONS (key mentions="+totalKeyMentions+")\n";
         str +="# response mentions\t"+totalResponseMentions+"\n";
