@@ -40,33 +40,33 @@ Example
 Function
    eu.newsreader.conversion.ReduceConllKey
 Example
-   java -cp ../lib/coreference-evaluation-1.0-SNAPSHOT-jar-with-dependencies.jar eu.newsreader.conversion.ReduceConllKey --key /Users/piek/Desktop/NWR/NWR-benchmark/coreference/corpus_CONLL/corpus_apple/entities/key
+   java -cp ../lib/coreference-evaluation-1.0-SNAPSHOT-jar-with-dependencies.jar eu.newsreader.conversion.ReduceConllKey --key /Users/piek/Desktop/NWR/NWR-benchmark/coreference/corpus_CONLL/corpus_apple/key
 
 4. Reduce the response file to the sentences of the key file
 
 Function
    eu.newsreader.conversion.ReduceConllResponse
 Example
-   java -cp ../lib/coreference-evaluation-1.0-SNAPSHOT-jar-with-dependencies.jar eu.newsreader.conversion.ReduceConllResponse --key ../../corpus_CONLL/corpus_apple/entities/key --response ../../corpus_CONLL/corpus_apple/entities/response
+   java -cp ../lib/coreference-evaluation-1.0-SNAPSHOT-jar-with-dependencies.jar eu.newsreader.conversion.ReduceConllResponse --key ../../corpus_CONLL/corpus_apple/entities/key --response ../../corpus_CONLL/corpus_apple/response
 
 5. Make the scripts to compare key files with response files in CoNLL coreference format using CorScorer.
 
 Function
    eu.newsreader.script.MakeScoreScript
 Example
-   java -cp ../lib/coreference-evaluation-1.0-SNAPSHOT-jar-with-dependencies.jar eu.newsreader.script.MakeScoreScript --key ../../corpus_CONLL/corpus_apple/entities/key --response ../../corpus_CONLL/corpus_apple/entities/response --corpus corpus_apple_entities --method blanc
+   java -cp ../lib/coreference-evaluation-1.0-SNAPSHOT-jar-with-dependencies.jar eu.newsreader.script.MakeScoreScript --key ../../corpus_CONLL/corpus_apple/entities/key --response ../../corpus_CONLL/corpus_apple//response --corpus corpus_apple_entities --method blanc
 
 6. Run the scripts that call the CorScorer for pairs of files
 
 Function
    perl ./v8.01/scorer.pl blanc
 Example
-   perl ./v8.01/scorer.pl blanc ../../corpus_CONLL/corpus_airbus/events/key/100911_Northrop_Grumman_and_Airbus_parent_EADS_defeat_Boeing.txt.xml.EVENT.key ../../corpus_CONLL/corpus_airbus/events/response/100911_Northrop_Grumman_and_Airbus_parent_EADS_defeat_Boeing.naf.EVENT.response > ../../corpus_CONLL/corpus_airbus/events/response/100911_Northrop_Grumman_and_Airbus_parent_EADS_defeat_Boeing.naf.EVENT.response.blanc.result
+   perl ./v8.01/scorer.pl blanc ../../corpus_CONLL/corpus_airbus/events/key/100911_Northrop_Grumman_and_Airbus_parent_EADS_defeat_Boeing.txt.xml.EVENT.key ../../corpus_CONLL/corpus_airbus//response/100911_Northrop_Grumman_and_Airbus_parent_EADS_defeat_Boeing.naf.EVENT.response > ../../corpus_CONLL/corpus_airbus/response/100911_Northrop_Grumman_and_Airbus_parent_EADS_defeat_Boeing.naf.EVENT.response.blanc.result
 
 7. Collect the results of each file in an overview spreadsheet with micro/macro averages
 
 Function
    eu.newsreader.result.CollectResults
 Example
-   java -cp ../lib/coreference-evaluation-1.0-SNAPSHOT-jar-with-dependencies.jar eu.newsreader.result.CollectResults --result-folder ../../corpus_CONLL/corpus_apple/events/response --extension .result
+   java -cp ../lib/coreference-evaluation-1.0-SNAPSHOT-jar-with-dependencies.jar eu.newsreader.result.CollectResults --result-folder ../../corpus_CONLL/corpus_apple/response --extension .result
 
