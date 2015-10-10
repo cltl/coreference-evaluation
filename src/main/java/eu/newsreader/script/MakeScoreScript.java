@@ -19,6 +19,7 @@ public class MakeScoreScript {
             String pathToResponseFolder = "";
             String corpus = "";
             String method = "";
+            boolean byFileName = false;
            //   pathToKeyFolder = "/Users/piek/Desktop/NWR/NWR-benchmark/coreference/corpus_CONLL/corpus_apple/entities/key";
            //   pathToResponseFolder = "/Users/piek/Desktop/NWR/NWR-benchmark/coreference/corpus_CONLL/corpus_apple/entities/response";
            //   corpus = "corpus_apple_entities";
@@ -36,6 +37,9 @@ public class MakeScoreScript {
                 else if (arg.equalsIgnoreCase("--method") && args.length>(i+1)) {
                     method = args[i+1];
                 }
+                else if (arg.equalsIgnoreCase("--by-name")) {
+                    byFileName = true;
+                }
             }
 
             String parentFolder = new File(pathToKeyFolder).getParent();
@@ -51,10 +55,20 @@ public class MakeScoreScript {
                 for (int j = 0; j < responseFiles.size(); j++) {
                     File responseFile = responseFiles.get(j);
                     String responseS1 = Util.readFirstSentence(responseFile);
-                    if (keyS1.equals(responseS1)) {
+                    if (byFileName) {
+                        if (keyFile.getName().equals(responseFile.getName())) {
+                          //  System.out.println("keyFile.getName() = " + keyFile.getName());
+                          //  System.out.println("responseFile.getName() = " + responseFile.getName());
+                            String str = "perl ./v8.01/scorer.pl " + method + " " + keyFile.getPath() + " " + responseFile.getPath() + " > " + responseFile.getPath() + "." + method + ".result \n";
+                            //  String str = "perl ./v8.01/scorer.pl "+method+" "+keyFile.getAbsolutePath()+" "+responseFile.getAbsolutePath()+" > "+responseFile.getAbsolutePath()+"."+method+".result \n";
+                            scriptFos.write(str.getBytes());
+                        }
+                    }
+                    else if (keyS1.equals(responseS1)) {
                       //  System.out.println("keyFile = " + keyFile.getCanonicalPath());
                       //  System.out.println("keyFile = " + keyFile.getAbsolutePath());
-                        String str = "perl ./v8.01/scorer.pl "+method+" "+keyFile.getAbsolutePath()+" "+responseFile.getAbsolutePath()+" > "+responseFile.getAbsolutePath()+"."+method+".result \n";
+                        String str = "perl ./v8.01/scorer.pl "+method+" "+keyFile.getPath()+" "+responseFile.getPath()+" > "+responseFile.getPath()+"."+method+".result \n";
+                      //  String str = "perl ./v8.01/scorer.pl "+method+" "+keyFile.getAbsolutePath()+" "+responseFile.getAbsolutePath()+" > "+responseFile.getAbsolutePath()+"."+method+".result \n";
                         scriptFos.write(str.getBytes());
                     }
                 }
