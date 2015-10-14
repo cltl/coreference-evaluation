@@ -19,6 +19,14 @@ public class CollectResults {
     static double precisionTotalCoreference = 0;
     static double f1TotalCoreference = 0;
 
+    static double recallTotalNoCoreference = 0;
+    static double precisionTotalNoCoreference = 0;
+    static double f1TotalNoCoreference = 0;
+
+    static double recallTotalBlanc = 0;
+    static double precisionTotalBlanc = 0;
+    static double f1TotalBlanc = 0;
+
     static int totalKeyMentions = 0;
     static int totalResponseMentions = 0;
 
@@ -66,70 +74,79 @@ public class CollectResults {
         String str = "";
         str = new File(pathToResponseFolder).getParent()+"\t"+label+"\n";
         str += "Date\t"+date.toString()+"\n\n";
+        str += "Nr. of result files\t"+resultFiles.size()+"\n";
         str +="MENTIONS (key mentions="+totalKeyMentions+")\n";
         str +="# response mentions\t"+totalResponseMentions+"\n";
         str +="# missed mentions\t"+totalMissedMentions+"\n";
         str +="# invented mentions\t"+totalInventedMentions+"\n";
         str +="# strictly correct identified mentions\t"+totalStrictlyCorrect+"\n";
         str +="# partially correct identified mentions\t"+totalPartiallyCorrect+"\n";
-        double recall = (double) totalStrictlyCorrect/totalKeyMentions;
-        double precision = (double) totalStrictlyCorrect/totalResponseMentions;
+        double recall = (double) 100*totalStrictlyCorrect/totalKeyMentions;
+        double precision = (double) 100*totalStrictlyCorrect/totalResponseMentions;
         double f1 = (double) 2*(recall*precision)/(recall+precision);
-        str +=" recall\t"+recall +"\n";
-        str +=" precision\t"+precision+"\n";
-        str +=" f1\t"+f1+"\n\n";
+        str +=" recall\t"+recall +"%\n";
+        str +=" precision\t"+precision+"%\n";
+        str +=" f1\t"+f1+"%\n\n";
 
         str += "REFERENCE (BLANC)\n";
         str +="# reference links\t"+totalKeyCoreferenceSets+"\n";
         str +="# response reference links\t"+totalResponseCoreferenceSets+"\n";
         str +="# correct reference links\t"+ totalCorrectCoreferences+"\n";
-        recall = (double) totalCorrectCoreferences/(double)totalKeyCoreferenceSets;
-        precision = (double) totalCorrectCoreferences/(double)totalResponseCoreferenceSets;
+        recall = (double) 100*totalCorrectCoreferences/(double)totalKeyCoreferenceSets;
+        precision = (double) 100*totalCorrectCoreferences/(double)totalResponseCoreferenceSets;
         f1 = (double) 2*(recall*precision)/(recall+precision);
-        str +=" recall\t"+recall +"\n";
-        str +=" precision\t"+precision+"\n";
-        str +=" f1\t"+f1+"\n\n";
+        str +=" recall\t"+recall +"%\n";
+        str +=" precision\t"+precision+"%\n";
+        str +=" f1\t"+f1+"%\n\n";
 
         str += "COREFERENCE\n";
         str +="# key coreference links\t"+totalKeyCoreferenceLinks+"\n";
         str +="# response coreference links\t"+totalResponseCoreferenceLinks+"\n";
         str +="# correct coreference links\t"+ totalCorrectCoreferenceLinks+"\n";
-        recall = (double) totalCorrectCoreferenceLinks/(double)totalKeyCoreferenceLinks;
-        precision = (double) totalCorrectCoreferenceLinks/(double)totalResponseCoreferenceLinks;
+        recall = (double) 100*totalCorrectCoreferenceLinks/(double)totalKeyCoreferenceLinks;
+        precision = (double) 100*totalCorrectCoreferenceLinks/(double)totalResponseCoreferenceLinks;
         f1 = (double) 2*(recall*precision)/(recall+precision);
-        str +=" recall\t"+recall +"\n";
-        str +=" precision\t"+precision+"\n";
-        str +=" f1\t"+f1+"\n\n";
+        str +=" recall\t"+recall +"%\n";
+        str +=" precision\t"+precision+"%\n";
+        str +=" f1\t"+f1+"%\n\n";
 
         str += "NOREFERENCE\n";
         str +="# key non-coreference links\t"+totalKeyNonCoreferenceLinks+"\n";
         str +="# response non-coreference links\t"+totalResponseNonCoreferenceLinks+"\n";
         str +="# correct non-coreference links\t"+ totalCorrectNonCoreferenceLinks+"\n";
-        recall = (double) totalCorrectNonCoreferenceLinks/(double)totalKeyNonCoreferenceLinks;
-        precision =  (double)totalCorrectNonCoreferenceLinks/(double)totalResponseNonCoreferenceLinks;
+        recall = (double) 100*totalCorrectNonCoreferenceLinks/(double)totalKeyNonCoreferenceLinks;
+        precision =  (double)100*totalCorrectNonCoreferenceLinks/(double)totalResponseNonCoreferenceLinks;
         f1 = (double) 2*(recall*precision)/(recall+precision);
-        str +=" recall\t"+recall +"\n";
-        str +=" precision\t"+precision+"\n";
-        str +=" f1\t"+f1+"\n\n";
+        str +=" recall\t"+recall +"%\n";
+        str +=" precision\t"+precision+"%\n";
+        str +=" f1\t"+f1+"%\n\n";
 
         str += "\n";
         double mentionRecall = recallTotalMentions/resultFiles.size();
         double mentionPrecision = precisionTotalMentions/resultFiles.size();
         double mentionF = f1TotalMentions/resultFiles.size();
+
         double coreferenceRecall = recallTotalCoreference/resultFiles.size();
         double coreferencePrecision = precisionTotalCoreference/resultFiles.size();
         double coreferenceF = f1TotalCoreference/resultFiles.size();
+        double nocoreferenceRecall = recallTotalNoCoreference/resultFiles.size();
+        double nocoreferencePrecision = precisionTotalNoCoreference/resultFiles.size();
+        double nocoreferenceF = f1TotalNoCoreference/resultFiles.size();
+
+        double blancRecall = recallTotalBlanc/resultFiles.size();
+        double blancPrecision = precisionTotalBlanc/resultFiles.size();
+        double blancF = f1TotalBlanc/resultFiles.size();
 
 
         str += "Macro average over all result files reported by the coref scorer:\n";
         str += "Macro average identification of Mentions\n";
-        str += "recall\t"+mentionRecall+"\n";
-        str += "precision\t"+mentionPrecision+"\n";
-        str += "f1\t"+mentionF+"\n\n";
-        str += "Macro average coreference\n";
-        str += "recall\t"+coreferenceRecall+"\n";
-        str += "precision\t"+coreferencePrecision+"\n";
-        str += "f1\t"+coreferenceF+"\n";
+        str += "recall\t"+mentionRecall+"%\n";
+        str += "precision\t"+mentionPrecision+"%\n";
+        str += "f1\t"+mentionF+"%\n\n";
+        str += "Macro average blanc\n";
+        str += "recall\t"+blancRecall+"%\n";
+        str += "precision\t"+blancPrecision+"%\n";
+        str += "f1\t"+blancF+"%\n";
         str += "\n";
 
         try {
@@ -288,6 +305,7 @@ public class CollectResults {
                         }
                         else if (inputLine.startsWith("Coreference:")
                                 ) {
+                            /// This format is used by other scores than BLANC
                             //Coreference: Recall: (1 / 2) 50%	Precision: (1 / 4) 25%	F1: 33.33%
                             String [] fields = inputLine.split("%");
                             if (fields.length>=3) {
@@ -373,7 +391,7 @@ public class CollectResults {
                                         System.out.println("inputLine = " + inputLine);
                                         e.printStackTrace();
                                     }
-                                    recallTotalCoreference += cnt;
+                                    recallTotalBlanc += cnt;
                                 }
                                 idx = fields[1].indexOf(")");
                                 if (idx>-1) {
@@ -384,7 +402,7 @@ public class CollectResults {
                                         System.out.println("inputLine = " + inputLine);
                                         e.printStackTrace();
                                     }
-                                    precisionTotalCoreference += cnt;
+                                    precisionTotalBlanc += cnt;
                                 }
                                 idx = fields[2].lastIndexOf(":");
                                 if (idx>-1) {
@@ -395,7 +413,7 @@ public class CollectResults {
                                         System.out.println("inputLine = " + inputLine);
                                         e.printStackTrace();
                                     }
-                                    f1TotalCoreference += cnt;
+                                    f1TotalBlanc += cnt;
                                 }
                             }
                         }
