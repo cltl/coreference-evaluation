@@ -122,6 +122,33 @@ public class CoNLL {
         }
     }
 
+/*    static public void readCoNLL (File file){
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader in = new BufferedReader(isr);
+            String inputLine = "";
+            String fileName = file.getName();
+            int idx = fileName.indexOf(".");
+            if (idx>-1) {
+                fileName = fileName.substring(0, idx);
+            }
+            HashMap<String, ArrayList<String>> labelSet = new HashMap<String, ArrayList<String>>();
+            HashMap<String, ArrayList<String>> tokenIdSet = new HashMap<String, ArrayList<String>>();
+            if (in.ready()&&(inputLine = in.readLine()) != null) {
+                ///skip first line
+            }
+            while (in.ready()&&(inputLine = in.readLine()) != null) {
+                if (inputLine.trim().length()>0) {
+
+                }
+            }
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }*/
+
     static public void readCorefSetFromCoNLL (File file, OutputStream fos, CorefStatistics corefStatistics, String result){
         try {
             FileInputStream fis = new FileInputStream(file);

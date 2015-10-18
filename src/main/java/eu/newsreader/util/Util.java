@@ -8,6 +8,54 @@ import java.util.ArrayList;
  */
 public class Util {
 
+    static public String getTokenId (String mention) {
+        //1_10ecbplus.xml.naf.fix.xml#char=592,597&word=w116&term=t116&sentence=5
+        String token = "";
+        int idx_s = mention.indexOf("word=");
+        if (idx_s>-1) {
+            int idx_e = mention.indexOf( "&", idx_s);
+            if (idx_e>-1) {
+                token= getNumericId(mention.substring(idx_s, idx_e));
+            }
+        }
+        return token;
+    }
+
+    static public String getFileFromMention (String mention) {
+        //1_10ecbplus.xml.naf.fix.xml#char=592,597&word=w116&term=t116&sentence=5
+        String file = "";
+        int idx_s = mention.indexOf(".");
+        if (idx_s>-1) {
+            file= mention.substring(0, idx_s);
+        }
+        return file;
+    }
+
+    static public String getSentence (String mention) {
+        //1_10ecbplus.xml.naf.fix.xml#char=592,597&word=w116&term=t116&sentence=5
+        String sentence = "";
+        if (mention.indexOf("sentence=")>-1) {
+            int idx_s = mention.lastIndexOf("=");
+            if (idx_s > -1) {
+                sentence = mention.substring(idx_s + 1);
+            }
+        }
+        return sentence;
+    }
+
+    static public String getNumericId (String id) {
+        //1_10ecbplus.xml.naf.fix.xml#ev27
+        final String number="12334567890";
+        String numString = "";
+        for (int i = 0; i < id.length(); i++) {
+            char c = id.charAt(i);
+            if (number.indexOf(c)>-1) {
+                numString+= c;
+            }
+        }
+        return numString;
+    }
+
 
     static public ArrayList<File> makeFolderList(File inputFile) {
         ArrayList<File> folderList = new ArrayList<File>();
