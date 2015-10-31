@@ -105,12 +105,15 @@ public class SemCoref {
         HashMap<String, String> tokenIdMap = new HashMap<String, String>();
         String trigfolder = "";
         String conllFile = "";
-        trigfolder = "/Users/piek/Desktop/NWR/NWR-benchmark/ecb/data/ecb_pip.v3/1" ;
-        conllFile = "/Users/piek/Desktop/NWR/NWR-benchmark/ecb/reference-coreference-scorers/topic.1.key";
+        trigfolder = "/Users/piek/Desktop/NWR/NWR-benchmark/ecb/data/ecb_pip.v3/2" ;
+        conllFile = "/Users/piek/Desktop/NWR/NWR-benchmark/ecb/cross-document/topic.2.key";
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
             if (arg.equals("--trig-folder") && args.length>(i+1)) {
                 trigfolder = args[i+1];
+            }
+            else if (arg.equals("--conll-file") && args.length>(i+1)) {
+                conllFile = args[i+1];
             }
         }
         tokenIdMap = readSemTrig(trigfolder);
@@ -120,7 +123,7 @@ public class SemCoref {
 
     static public void addSemToCoNLL (File file, HashMap<String, String> tokenIdMap){
         try {
-            OutputStream fos = new FileOutputStream(file.getAbsoluteFile()+".response");
+            OutputStream fos = new FileOutputStream(file.getAbsoluteFile()+".xdoc");
             FileInputStream fis = new FileInputStream(file);
             InputStreamReader isr = new InputStreamReader(fis);
             BufferedReader in = new BufferedReader(isr);
