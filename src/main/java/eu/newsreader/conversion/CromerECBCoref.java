@@ -135,6 +135,7 @@ public class CromerECBCoref extends DefaultHandler {
 
      */
     String value = "";
+    ArrayList<String> coreferringTerms;
     static public HashMap<String, String> crossDocIdMap;
     static public HashMap<String, KafCoreferenceSet> coreferenceHashMap;
     static public ArrayList<KafCoreferenceSet> kafCoreferenceSetArrayList;
@@ -152,8 +153,11 @@ public class CromerECBCoref extends DefaultHandler {
     String target = "";
     boolean REFERSTO = false;
 
+    String singletonId = "";
+
     void init() {
         value = "";
+        coreferringTerms = new ArrayList<String>();
         crossDocIdMap = new HashMap<String, String>();
         coreferenceHashMap = new HashMap<String, KafCoreferenceSet>();
         kafCoreferenceSetArrayList = new ArrayList<KafCoreferenceSet>();
@@ -169,18 +173,37 @@ public class CromerECBCoref extends DefaultHandler {
         target = "";
     }
 
+    public void initSingletonId (String filePath) {
+        String dig = "1234567890";
+        File file = new File (filePath);
+        String name = file.getName();
+        if (name.indexOf("plus")>-1) {
+            singletonId = "99";
+        }
+        else {
+            singletonId = "88";
+        }
+        for (int i = 0; i < name.length(); i++) {
+            char c = name.charAt(i);
+            if (dig.indexOf(c)>-1) {
+                singletonId+=c;
+            }
+        }
+    }
+
     public void parseFile(String filePath) {
         String myerror = "";
         init();
+        initSingletonId(filePath);
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             factory.setValidating(false);
             SAXParser parser = factory.newSAXParser();
             InputSource inp = new InputSource (new FileReader(filePath));
             parser.parse(inp, this);
+            addSingletons();
             switchToTokenIds();
             useCrossDocIds();
-
         } catch (SAXParseException err) {
             myerror = "\n** Parsing error" + ", line " + err.getLineNumber()
                     + ", uri " + err.getSystemId();
@@ -217,10 +240,10 @@ public class CromerECBCoref extends DefaultHandler {
             String mention = attributes.getValue("m_id");
             if (type!=null && mention!=null && !type.isEmpty() && !mention.isEmpty()) {
                 eventMentionTypeMap.put(mention, type);
+                kafTerm = new KafTerm();
+                kafTerm.setType("EVENT");
+                kafTerm.setTid(mention);
             }
-            kafTerm = new KafTerm();
-            kafTerm.setType("EVENT");
-            kafTerm.setTid(attributes.getValue("m_id"));
         }
         else if (qName.indexOf("_PAR_")>-1) {
             kafTerm = new KafTerm();
@@ -233,6 +256,9 @@ public class CromerECBCoref extends DefaultHandler {
                 /// sources and targets can also occur for other relations than refersto
                 corefTarget = new CorefTarget();
                 corefTarget.setId(attributes.getValue("m_id"));
+                if (!coreferringTerms.contains(corefTarget.getId())) {
+                    coreferringTerms.add(corefTarget.getId());
+                }
                 corefTargetArrayList.add(corefTarget);
             }
         }
@@ -240,6 +266,9 @@ public class CromerECBCoref extends DefaultHandler {
             if (REFERSTO) {
                 /// sources and targets can also occur for other relations than refersto
                 target = attributes.getValue("m_id");
+                if (!coreferringTerms.contains(target)) {
+                    coreferringTerms.add(target);
+                }
                 if (!crossDocId.isEmpty()) {
                    crossDocIdMap.put(target, crossDocId);
                 }
@@ -324,6 +353,46 @@ public class CromerECBCoref extends DefaultHandler {
             kafCoreferenceSet = new KafCoreferenceSet();
             target = "";
         }
+    }
+
+
+    public void addSingletons() {
+        for (int i = 0; i < kafTermArrayList.size(); i++) {
+            KafTerm term = kafTermArrayList.get(i);
+            if (!coreferringTerms.contains(term.getTid())) {
+                System.out.println("term.getTid() = " + term.getTid());
+                KafCoreferenceSet set = new KafCoreferenceSet();
+                set.setType(term.getType());
+                corefTargetArrayList = new ArrayList<CorefTarget>();
+                String id  = "";
+                for (int j = 0; j < term.getSpans().size(); j++) {
+                    String span =  term.getSpans().get(j);
+                    KafWordForm kafWordForm = getKafWordForm(span);
+                    if (kafWordForm!=null) id+= kafWordForm.getSent()+kafWordForm.getWid();
+                    corefTarget = new CorefTarget();
+                    corefTarget.setId(span);
+                    corefTargetArrayList.add(corefTarget);
+                }
+                if (id.isEmpty()) {
+                    set.setCoid(singletonId+term.getTid());
+                }
+                else {
+                    set.setCoid(singletonId + id);
+                }
+                set.addSetsOfSpans(corefTargetArrayList);
+                kafCoreferenceSetArrayList.add(set);
+            }
+        }
+    }
+
+    public KafWordForm getKafWordForm (String tokenId) {
+        for (int i = 0; i < kafWordFormArrayList.size(); i++) {
+            KafWordForm wordForm = kafWordFormArrayList.get(i);
+            if (wordForm.getWid().equals(tokenId)) {
+                return wordForm;
+            }
+        }
+        return null;
     }
 
     public void useCrossDocIds () {
@@ -445,11 +514,12 @@ public class CromerECBCoref extends DefaultHandler {
         // type = "EVENT-SPEECH_COGNITIVE";
         // type = "EVENT-OTHER";
         // type = "ENTITY";
-        //type = "EVENT";
-        //pathToCatFile = "/Users/piek/Desktop/NWR/ECB+_LREC2014/ECB+/1/1_1ecb.xml";
+        type = "EVENT";
+       // pathToCatFile = "/Users/piek/Desktop/NWR/ECB/ECB+_LREC2014/ECB+/10/10_19ecbplus.xml";
+        folder = "/Users/piek/Desktop/NWR/ECB/ECB+_LREC2014/ECB+";
         //folder = "/Users/piek/Desktop/NWR/NWR-benchmark/coreference/corpus_CAT_GS_201412/corpus_apple/";
         //fileExtension = ".xml";
-        //format = "conll";
+        format = "conll";
         CromerECBCoref catCoref = new CromerECBCoref();
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
@@ -474,7 +544,12 @@ public class CromerECBCoref extends DefaultHandler {
             catCoref.parseFile(pathToCatFile);
             OutputStream fos = null;
             try {
-                fos = new FileOutputStream(pathToCatFile + "." + type + ".key");
+                if (type.isEmpty()) {
+                    fos = new FileOutputStream(pathToCatFile + ".key");
+                }
+                else {
+                    fos = new FileOutputStream(pathToCatFile + "." + type + ".key");
+                }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -497,7 +572,7 @@ public class CromerECBCoref extends DefaultHandler {
                 e.printStackTrace();
             }
         } else if (!folder.isEmpty()) {
-            ArrayList<File> files = Util.makeFlatFileList(new File(folder), fileExtension);
+            ArrayList<File> files = Util.makeRecursiveFileList(new File(folder), fileExtension);
             for (int i = 0; i < files.size(); i++) {
                 File file = files.get(i);
                 //System.out.println("file.getName() = " + file.getName());
@@ -508,18 +583,28 @@ public class CromerECBCoref extends DefaultHandler {
                 if (idx > -1) {
                     fileName = fileName.substring(0, idx);
                 }
-                // System.out.println("fileName = " + fileName);
-                try {
-                    OutputStream fos = new FileOutputStream(file.getAbsolutePath() + "." + type + ".key");
-                    if (format.equals("coref")) {
-                        catCoref.serializeToCorefSet(fos, fileName, type);
-                    } else if (format.equals("conll")) {
-                        CoNLLfile.serializeToCoNLL(fos, fileName, type, kafWordFormArrayList, kafCoreferenceSetArrayList);
-                    }
+                String parentFolderPath = file.getParent()+"/"+"key";
+                File parentFolder = new File (parentFolderPath);
+                if (!parentFolder.exists()) parentFolder.mkdir();
+                if (parentFolder.exists()) {
+                    // System.out.println("fileName = " + fileName);
+                    try {
+                        OutputStream fos = null;
+                        if (type.isEmpty()) {
+                            fos = new FileOutputStream(parentFolderPath+"/"+file.getName() + ".key");
+                        } else {
+                            fos = new FileOutputStream(parentFolderPath+"/"+file.getName() + "." + type + ".key");
+                        }
+                        if (format.equals("coref")) {
+                            catCoref.serializeToCorefSet(fos, fileName, type);
+                        } else if (format.equals("conll")) {
+                            CoNLLfile.serializeToCoNLL(fos, fileName, type, kafWordFormArrayList, kafCoreferenceSetArrayList);
+                        }
 
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                        fos.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

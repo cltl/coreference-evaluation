@@ -137,7 +137,7 @@ public class CoNLLfile {
                     String [] fields = inputLine.split("\t");
                     if (fields.length==5) {
                         String token = fields[3];
-                        String tokenId = fields[2];
+                        String tokenId = fields[0]+":"+fields[2];
                         String corefId = fields[4];
                         if (corefId.startsWith("(")) {
                             corefId= corefId.substring(1);
@@ -263,7 +263,7 @@ public class CoNLLfile {
                     else {
                         NEWSENTENCE = false;
                     }
-                    String corefId = getCoreferenceSetId(kafCoreferenceSetArrayList,kafWordForm.getWid(), type);
+                    String corefId = getCoreferenceSetId(kafCoreferenceSetArrayList, kafWordForm.getWid(), type);
                     //System.out.println(kafWordForm.getWid()+":" + corefId);
                     //// First we need to handle the previous line if any
                     //// After that we can process the current
@@ -347,21 +347,27 @@ public class CoNLLfile {
         }
 
         static public String getCoreferenceSetId (ArrayList<KafCoreferenceSet> kafCoreferenceSetArrayList, String tokenId, String type) {
+            boolean DEBUG = false;
             String corefId = "";
-           // System.out.println("tokenId = " + tokenId);
+            if (tokenId.equals("41")) DEBUG = true;
+            if (DEBUG) System.out.println("tokenId = " + tokenId);
             for (int i = 0; i < kafCoreferenceSetArrayList.size(); i++) {
                 KafCoreferenceSet corefSet  = kafCoreferenceSetArrayList.get(i);
-               // System.out.println("coref.getType() = " + corefSet.getType());
+                if (DEBUG)  System.out.println("coref.getType() = " + corefSet.getType());
+                if (DEBUG) System.out.println("corefSet.getCoid() = " + corefSet.getCoid());
                 if (type.isEmpty() || corefSet.getType().toLowerCase().startsWith(type.toLowerCase())) {
                     for (int j = 0; j < corefSet.getSetsOfSpans().size(); j++) {
                         ArrayList<CorefTarget> corefTargets = corefSet.getSetsOfSpans().get(j);
                         for (int k = 0; k < corefTargets.size(); k++) {
                             CorefTarget corefTarget = corefTargets.get(k);
-                           // System.out.println("corefTarget.getId = " + corefTarget.getId());
+                            if (DEBUG)  System.out.println("corefTarget.getId = " + corefTarget.getId());
                             if (corefTarget.getId().equals(tokenId)) {
                                 corefId = corefSet.getCoid();
-                             //   System.out.println("corefId = " + corefId);
+                                if (DEBUG) System.out.println("MATCHING corefId = " + corefId);
                                 break;
+                            }
+                            else {
+                                if (DEBUG) System.out.println("NON MATCHING corefTarget.getId() = " + corefTarget.getId());
                             }
                         }
                         if (!corefId.isEmpty()) {
@@ -370,13 +376,13 @@ public class CoNLLfile {
                     }
                 }
                 else {
-                    //  if (!corefSet.getType().isEmpty()) System.out.println("coref.getType() = " + corefSet.getType());
+                    if (DEBUG)  if (!corefSet.getType().isEmpty()) System.out.println("coref.getType() = " + corefSet.getType());
                 }
                 if (!corefId.isEmpty()) {
                     break;
                 }
             }
-           // if (!corefId.isEmpty()) System.out.println("corefId = " + corefId);
+            if (DEBUG) if (!corefId.isEmpty()) System.out.println("corefId = " + corefId);
             return corefId;
         }
 }
