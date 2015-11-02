@@ -3,7 +3,6 @@ package eu.newsreader.conversion;
 import eu.kyotoproject.kaf.CorefTarget;
 import eu.kyotoproject.kaf.KafCoreferenceSet;
 import eu.kyotoproject.kaf.KafWordForm;
-import eu.newsreader.util.Util;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ import java.util.Set;
 /**
  * Created by piek on 12/15/14.
  */
-public class CoNLL {
+public class CoNLLfile {
     static public class CorefStatistics {
         private int nCorefSets;
         private int nMentions;
@@ -82,36 +81,30 @@ public class CoNLL {
     }
 
     static public void main (String[] args) {
-        String pathToKeyFolder = "";
-        String pathToResponseFolder = "";
-        pathToKeyFolder = "/Users/piek/Desktop/NWR/NWR-benchmark/coreference/corpus_CONLL-wn-sim-2.5-wsd8-ims-ukb-top/corpus_stock_market/events/key/";
-        pathToResponseFolder = "/Users/piek/Desktop/NWR/NWR-benchmark/coreference/corpus_CONLL-wn-sim-2.5-wsd8-ims-ukb-top/corpus_stock_market/events/response/";
+        String pathToKeyFile = "";
+        String pathToResponseFile = "";
+        pathToKeyFile = "/Users/piek/Desktop/NWR/NWR-benchmark/ecb/cross-document/topic_1.key";
+        pathToResponseFile ="/Users/piek/Desktop/NWR/NWR-benchmark/ecb/cross-document/topic_1.response";
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
-            if (arg.equals("--key-folder") && args.length>(i+1)) {
-                pathToKeyFolder = args[i+1];
+            if (arg.equals("--key-file") && args.length>(i+1)) {
+                pathToKeyFile = args[i+1];
             }
-            else if (arg.equals("--response-folder") && args.length>(i+1)) {
-                pathToResponseFolder = args[i+1];
+            else if (arg.equals("--response-file") && args.length>(i+1)) {
+                pathToResponseFile = args[i+1];
             }
         }
 
-        File inputKeyFolder = new File(pathToKeyFolder);
-        File inputResponseFolder = new File(pathToResponseFolder);
+        File inputKeyFile = new File(pathToKeyFile);
+        File inputResponseFile = new File(pathToResponseFile);
         CorefStatistics corefKeyStatistics = new CorefStatistics();
         CorefStatistics corefResponseStatistics = new CorefStatistics();
         try {
-            OutputStream fos = new FileOutputStream(inputKeyFolder.getParentFile()+"/"+"corefOverview.csv");
-            ArrayList<File> keyFiles = Util.makeRecursiveFileList(inputKeyFolder);
-            for (int i = 0; i < keyFiles.size(); i++) {
-                File file = keyFiles.get(i);
-                readCorefSetFromCoNLL(file, fos, corefKeyStatistics, "key");
-            }
-            ArrayList<File> responseFiles = Util.makeRecursiveFileList(inputResponseFolder);
-            for (int i = 0; i < responseFiles.size(); i++) {
-                File file = responseFiles.get(i);
-                readCorefSetFromCoNLL(file, fos, corefResponseStatistics, "response");
-            }
+            OutputStream fos = new FileOutputStream(inputKeyFile+"."+"error-analysis.csv");
+            readCorefSetFromCoNLL(inputKeyFile, fos, corefKeyStatistics, "key");
+            readCorefSetFromCoNLL(inputResponseFile, fos, corefResponseStatistics, "response");
+            fos.close();
+            fos = new FileOutputStream(inputKeyFile+"."+"mention-instance-stats.csv");
             String str = "KEY:\n"+corefKeyStatistics.toString("KEY");
             fos.write(str.getBytes());
             str = "RESPONSE:\n"+corefResponseStatistics.toString("RESPONSE");
@@ -122,32 +115,6 @@ public class CoNLL {
         }
     }
 
-/*    static public void readCoNLL (File file){
-        try {
-            FileInputStream fis = new FileInputStream(file);
-            InputStreamReader isr = new InputStreamReader(fis);
-            BufferedReader in = new BufferedReader(isr);
-            String inputLine = "";
-            String fileName = file.getName();
-            int idx = fileName.indexOf(".");
-            if (idx>-1) {
-                fileName = fileName.substring(0, idx);
-            }
-            HashMap<String, ArrayList<String>> labelSet = new HashMap<String, ArrayList<String>>();
-            HashMap<String, ArrayList<String>> tokenIdSet = new HashMap<String, ArrayList<String>>();
-            if (in.ready()&&(inputLine = in.readLine()) != null) {
-                ///skip first line
-            }
-            while (in.ready()&&(inputLine = in.readLine()) != null) {
-                if (inputLine.trim().length()>0) {
-
-                }
-            }
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
 
     static public void readCorefSetFromCoNLL (File file, OutputStream fos, CorefStatistics corefStatistics, String result){
         try {

@@ -68,7 +68,7 @@ public class NafCoref extends DefaultHandler {
                 serializeToCorefSet(System.out, kafSaxParser, fileName , type);
             }
             else if (format.equalsIgnoreCase("conll")) {
-                CoNLL.serializeToCoNLL(System.out, fileName, type, kafSaxParser.kafWordFormList, kafSaxParser.kafCorefenceArrayList);
+                CoNLLfile.serializeToCoNLL(System.out, fileName, type, kafSaxParser.kafWordFormList, kafSaxParser.kafCorefenceArrayList);
             }
             else {
                 System.out.println("Unknown format:"+ format);
@@ -92,7 +92,7 @@ public class NafCoref extends DefaultHandler {
                         serializeToCorefSet(fos, kafSaxParser, fileName, type);
                     }
                     else if (format.equalsIgnoreCase("conll")) {
-                        CoNLL.serializeToCoNLL(fos, fileName, type, kafSaxParser.kafWordFormList, kafSaxParser.kafCorefenceArrayList);
+                        CoNLLfile.serializeToCoNLL(fos, fileName, type, kafSaxParser.kafWordFormList, kafSaxParser.kafCorefenceArrayList);
                     }
                     else {
                         System.out.println("Unknown format:"+ format);

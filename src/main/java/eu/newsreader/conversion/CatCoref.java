@@ -400,7 +400,7 @@ certainty="CERTAIN" polarity="POS" tense="PRESENT" modality="" pred="unveil" com
                 catCoref.serializeToCorefSet(fos, fileName, type);
                 //catCoref.serializeToCorefSet(System.out, new File (pathToCatFile).getName(), type);
             } else if (format.equals("conll")) {
-                CoNLL.serializeToCoNLL(fos, fileName, type, kafWordFormArrayList, kafCoreferenceSetArrayList);
+                CoNLLfile.serializeToCoNLL(fos, fileName, type, kafWordFormArrayList, kafCoreferenceSetArrayList);
                 // CoNLL.serializeToCoNLL(System.out, new File(pathToCatFile).getName(), type, kafWordFormArrayList, kafCoreferenceSetArrayList);
             }
             try {
@@ -426,7 +426,7 @@ certainty="CERTAIN" polarity="POS" tense="PRESENT" modality="" pred="unveil" com
                     if (format.equals("coref")) {
                         catCoref.serializeToCorefSet(fos, fileName, type);
                     } else if (format.equals("conll")) {
-                        CoNLL.serializeToCoNLL(fos, fileName, type, kafWordFormArrayList, kafCoreferenceSetArrayList);
+                        CoNLLfile.serializeToCoNLL(fos, fileName, type, kafWordFormArrayList, kafCoreferenceSetArrayList);
                     }
 
                     fos.close();

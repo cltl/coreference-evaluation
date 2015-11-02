@@ -488,7 +488,7 @@ public class CromerECBCoref extends DefaultHandler {
                 catCoref.serializeToCorefSet(fos, fileName, type);
                 //catCoref.serializeToCorefSet(System.out, new File (pathToCatFile).getName(), type);
             } else if (format.equals("conll")) {
-                CoNLL.serializeToCoNLL(fos, fileName, type, kafWordFormArrayList, kafCoreferenceSetArrayList);
+                CoNLLfile.serializeToCoNLL(fos, fileName, type, kafWordFormArrayList, kafCoreferenceSetArrayList);
                 // CoNLL.serializeToCoNLL(System.out, new File(pathToCatFile).getName(), type, kafWordFormArrayList, kafCoreferenceSetArrayList);
             }
             try {
@@ -514,7 +514,7 @@ public class CromerECBCoref extends DefaultHandler {
                     if (format.equals("coref")) {
                         catCoref.serializeToCorefSet(fos, fileName, type);
                     } else if (format.equals("conll")) {
-                        CoNLL.serializeToCoNLL(fos, fileName, type, kafWordFormArrayList, kafCoreferenceSetArrayList);
+                        CoNLLfile.serializeToCoNLL(fos, fileName, type, kafWordFormArrayList, kafCoreferenceSetArrayList);
                     }
 
                     fos.close();

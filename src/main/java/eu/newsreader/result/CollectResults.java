@@ -64,7 +64,7 @@ public class CollectResults {
                 label = args[i+1];
             }
         }
-        String pathToResultFile = new File(pathToResponseFolder).getParent()+"/"+label+"results.csv";
+        String pathToResultFile = new File(pathToResponseFolder).getParent()+"/"+label+".results.csv";
         ArrayList<File> resultFiles = Util.makeRecursiveFileList(new File(pathToResponseFolder), extension);
         for (int i = 0; i < resultFiles.size(); i++) {
             File resultFile = resultFiles.get(i);
@@ -328,7 +328,7 @@ public class CollectResults {
                                     //System.out.println("correct = " + correct);
                                     //System.out.println("recall = " + recall);
                                     try {
-                                        totalCorrectCoreferences += Double.parseDouble(correct);
+                                        totalCorrectCoreferences += Integer.parseInt(correct);
                                     } catch (NumberFormatException e) {
                                         e.printStackTrace();
                                     }
