@@ -16,15 +16,14 @@ public class ReduceConllKey {
     static public void main (String[] args) {
         try {
             String pathToKeyFolder = "";
-          //  pathToKeyFolder = "/Users/piek/Desktop/NWR/NWR-benchmark/coreference/corpus_CONLL/corpus_apple/entities/key";
+            pathToKeyFolder = "/Users/piek/Desktop/NWR/NWR-benchmark/ecb/data/ECB+CoNLL";
             for (int i = 0; i < args.length; i++) {
                 String arg = args[i];
                 if (arg.equalsIgnoreCase("--key") && args.length>(i+1)) {
                     pathToKeyFolder = args[i+1];
                 }
             }
-
-            ArrayList<File> keyFiles = Util.makeRecursiveFileList(new File(pathToKeyFolder));
+            ArrayList<File> keyFiles = Util.makeRecursiveFileList(new File(pathToKeyFolder), ".key");
             for (int i = 0; i < keyFiles.size(); i++) {
                 File keyFile = keyFiles.get(i);
                // System.out.println("keyFile = " + keyFile);

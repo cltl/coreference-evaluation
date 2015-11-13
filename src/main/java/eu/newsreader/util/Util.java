@@ -2,6 +2,7 @@ package eu.newsreader.util;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by piek on 12/15/14.
@@ -220,7 +221,7 @@ public class Util {
                             if (currentSentence.equals(previousSentence)) {
                                sentenceBuffer += inputLine+"\n";
                                if (!fields[4].equals("-")) {
-                                  annotated = true;
+                                   annotated = true;
                                }
                             }
                             else {
@@ -297,6 +298,51 @@ public class Util {
         return buffer;
     }
 
+    static public String reduceConllFileForSentenceIds(File file, HashMap<String, ArrayList<String>> topicSentenceIdMap) {
+        String buffer = "";
+        if (file.exists() ) {
+            try {
+                System.out.println("file.getName() = " + file.getName());
+                FileInputStream fis = new FileInputStream(file);
+                InputStreamReader isr = new InputStreamReader(fis);
+                BufferedReader in = new BufferedReader(isr);
+                String inputLine;
+                String topicFile = "";
+                String currentSentence = "";
+                while (in.ready()&&(inputLine = in.readLine()) != null) {
+                    if (inputLine.trim().length()>0) {
+                        String[] fields = inputLine.split("\t");
+                        if (fields.length==5) {
+                            topicFile = fields[0];
+                            if (topicSentenceIdMap.containsKey(topicFile)) {
+                                ArrayList<String>  sentenceIds = topicSentenceIdMap.get(topicFile);
+                                currentSentence = fields[1];
+                                if (sentenceIds.contains(currentSentence)) {
+                                    buffer += inputLine + "\n";
+                                }
+                                else {
+                                    System.out.println("skipping currentSentence = " + currentSentence);
+                                }
+                            }
+                        }
+                        else {
+                            buffer += inputLine+"\n";
+                        }
+                    }
+                    else {
+                        buffer +="\n";
+                    }
+                }
+               // System.out.println("buffer = " + buffer);
+               // System.out.println("currentSentence = " + currentSentence);
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return buffer;
+    }
+
 
     static public String readFirstSentence(File file) {
         String s1 = "";
@@ -329,4 +375,40 @@ public class Util {
                      9549_Reactions_to_Apple	6	149	rolled	-
 
                      */
+    static public HashMap<String, ArrayList<String>> readTopicSentenceIds (String pathToFile) {
+        HashMap<String, ArrayList<String>> map = new HashMap<String, ArrayList<String>>() ;
+        try {
+            FileInputStream fis = new FileInputStream(pathToFile);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader in = new BufferedReader(isr);
+            String inputLine;
+            String currentSentence = "";
+            if (in.ready()&&(inputLine = in.readLine()) != null) {
+                /// skip first line
+            }
+            while (in.ready()&&(inputLine = in.readLine()) != null) {
+                String[] fields= inputLine.split(",") ;
+                if (fields.length==3) {
+                    String topic = fields[0];
+                    String file = fields[1];
+                    String sentence = fields[2];
+                    String topicFile = topic+"_"+file;
+                    if (map.containsKey(topicFile)) {
+                        ArrayList<String> ids = map.get(topicFile);
+                        ids.add(sentence);
+                        map.put(topicFile, ids);
+                    }
+                    else {
+                        ArrayList<String> ids = new ArrayList<String>();
+                        ids.add(sentence);
+                        map.put(topicFile, ids);
+                    }
+                }
+            }
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return map;
+    }
 }

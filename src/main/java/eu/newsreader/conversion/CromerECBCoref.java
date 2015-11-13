@@ -31,6 +31,7 @@ import java.util.Set;
 
 /**
  * Created by piek on 12/15/14.
+ * @Deprecated. Use CromerECBCoref2 instead!!!!
  */
 public class CromerECBCoref extends DefaultHandler {
 
@@ -235,7 +236,7 @@ public class CromerECBCoref extends DefaultHandler {
             Integer sentenceInt = Integer.parseInt(attributes.getValue("sentence"));
             kafWordForm.setSent(sentenceInt.toString());
         }
-        else if (qName.startsWith("ACTION_")) {
+        else if (qName.toLowerCase().startsWith("action_")) {
             String type = qName;
             String mention = attributes.getValue("m_id");
             if (type!=null && mention!=null && !type.isEmpty() && !mention.isEmpty()) {
@@ -245,7 +246,7 @@ public class CromerECBCoref extends DefaultHandler {
                 kafTerm.setTid(mention);
             }
         }
-        else if (qName.indexOf("_PAR_")>-1) {
+        else if (qName.toLowerCase().indexOf("_par_")>-1) {
             kafTerm = new KafTerm();
             kafTerm.setType("ENTITY");
             kafTerm.setTid(attributes.getValue("m_id"));

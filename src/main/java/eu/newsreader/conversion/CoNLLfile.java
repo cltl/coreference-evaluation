@@ -349,7 +349,7 @@ public class CoNLLfile {
         static public String getCoreferenceSetId (ArrayList<KafCoreferenceSet> kafCoreferenceSetArrayList, String tokenId, String type) {
             boolean DEBUG = false;
             String corefId = "";
-            if (tokenId.equals("41")) DEBUG = true;
+           // if (tokenId.equals("41")) DEBUG = true;
             if (DEBUG) System.out.println("tokenId = " + tokenId);
             for (int i = 0; i < kafCoreferenceSetArrayList.size(); i++) {
                 KafCoreferenceSet corefSet  = kafCoreferenceSetArrayList.get(i);

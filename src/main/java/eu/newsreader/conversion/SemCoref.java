@@ -20,7 +20,7 @@ public class SemCoref {
 
 
         static final String instanceGraph = "http://www.newsreader-project.eu/instances";
-
+        static ArrayList<String> eventIdentifierArray = new ArrayList<String>();
 
         static public HashMap<String, String>  readSemTrig (String trigFolder) {
             HashMap<String, String> tokenIdMap = new HashMap<String, String>();
@@ -56,7 +56,10 @@ public class SemCoref {
 
         static void updateTokenMap (HashMap<String, String> tokenIdMap, Statement s) {
             String predicate = s.getPredicate().getURI();
+
             String subject = s.getSubject().getURI();
+
+
             String object = "";
             if (s.getObject().isLiteral()) {
                 object = s.getObject().asLiteral().toString();
@@ -74,14 +77,22 @@ public class SemCoref {
 
             if (predicate.endsWith("denotedBy")) {
                 if (subject.indexOf("#ev")>-1) {
-                    String token = "";
+                    if (!eventIdentifierArray.contains(subject)) {
+                        eventIdentifierArray.add(subject);
+                    }   String token = "";
                     String id = "";
                     String file = "";
                     String sentence = "";
                     file = Util.getFileFromMention(object);
                     sentence = Util.getSentence(object);
                     token = Util.getTokenId(object);
-                    id = Util.getNumericId(subject);
+                   // id = Util.getNumericId(subject); /// this does not work, they get messed up
+                    Integer numericEventId = eventIdentifierArray.indexOf(subject);
+                    //System.out.println("numericEventId = " + numericEventId);
+                    //System.out.println("eventIdentifierArray = " + eventIdentifierArray.size());
+                    id = numericEventId.toString();
+                  //  System.out.println("id = " + id);
+                  //  System.out.println("subject = " + subject);
                     //1_10ecbplus.xml.naf.fix.xml#ev27
                     //1_10ecbplus.xml.naf.fix.xml#char=592,597&word=w116&term=t116&sentence=5
                     // get ID
@@ -103,10 +114,11 @@ public class SemCoref {
 
     static public void main (String[] args) {
         HashMap<String, String> tokenIdMap = new HashMap<String, String>();
+        eventIdentifierArray = new ArrayList<String>();
         String trigfolder = "";
         String conllFile = "";
-        trigfolder = "/Users/piek/Desktop/NWR/NWR-benchmark/ecb/data/ecb_pip.v3/2" ;
-        conllFile = "/Users/piek/Desktop/NWR/NWR-benchmark/ecb/cross-document/topic.2.key";
+        trigfolder = "/Users/piek/Desktop/NWR/NWR-benchmark/ecb/data/ecb_pip/1" ;
+        conllFile = "/Users/piek/Desktop/NWR/NWR-benchmark/ecb/cross-document/topic_1.key";
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
             if (arg.equals("--trig-folder") && args.length>(i+1)) {
