@@ -114,30 +114,55 @@ public class SemCoref {
         }
 
     static public void main (String[] args) {
-        HashMap<String, String> tokenIdMap = new HashMap<String, String>();
-        eventIdentifierArray = new ArrayList<String>();
-        String trigfolder = "";
-        String conllFile = "";
-        trigfolder = "/Users/piek/Desktop/NWR/NWR-benchmark/ecb/data/ecb_pip/1" ;
-        conllFile = "/Users/piek/Desktop/NWR/NWR-benchmark/ecb/cross-document/topic_1.key";
-        for (int i = 0; i < args.length; i++) {
-            String arg = args[i];
-            if (arg.equals("--trig-folder") && args.length>(i+1)) {
-                trigfolder = args[i+1];
+
+        try {
+            OutputStream fosMissed = null;
+            OutputStream fosInvented = null;
+
+            HashMap<String, String> tokenIdMap = new HashMap<String, String>();
+            eventIdentifierArray = new ArrayList<String>();
+            String trigfolder ="";
+            String conllFilePath = "";
+            for (int i = 0; i < args.length; i++) {
+                String arg = args[i];
+                if (arg.equals("--trig-folder") && args.length>(i+1)) {
+                    trigfolder = args[i+1];
+                }
+                else if (arg.equals("--conll-file") && args.length>(i+1)) {
+                    conllFilePath = args[i+1];
+                }
+                else if (arg.equals("--key-events")) {
+                    KEYEVENTS = true;
+                }
             }
-            else if (arg.equals("--conll-file") && args.length>(i+1)) {
-                conllFile = args[i+1];
+            File conllFile = new File (conllFilePath);
+            File outputMissed = new File (conllFile.getParentFile()+"/"+"response.missed.txt");
+            File outputInvented = new File (conllFile.getParentFile()+"/"+"response.invented.txt");
+            if (outputMissed.exists()) {
+                fosMissed = new FileOutputStream(outputMissed, true);
             }
-            else if (arg.equals("--key-events")) {
-                KEYEVENTS = true;
+            else {
+                fosMissed = new FileOutputStream(outputMissed);
             }
+            if (outputInvented.exists()) {
+                fosInvented = new FileOutputStream(outputInvented, true);
+            }
+            else {
+                fosInvented = new FileOutputStream(outputInvented);
+            }
+
+            tokenIdMap = readSemTrig(trigfolder);
+            addSemToCoNLL(fosMissed, fosInvented, conllFile, tokenIdMap);
+
+            fosInvented.close();
+            fosMissed.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        tokenIdMap = readSemTrig(trigfolder);
-        addSemToCoNLL(new File(conllFile), tokenIdMap);
     }
 
 
-    static public void addSemToCoNLL (File file, HashMap<String, String> tokenIdMap){
+    static public void addSemToCoNLL (OutputStream fosMissed, OutputStream fosInvented, File file, HashMap<String, String> tokenIdMap){
         try {
             OutputStream fos = new FileOutputStream(file.getAbsoluteFile()+".xdoc");
             FileInputStream fis = new FileInputStream(file);
@@ -170,6 +195,10 @@ public class SemCoref {
                     String tag = fields[4];
                     String tokenKey = fileId + "\t" + sentenceId + "\t" + tokenId;
                     if (tokenIdMap.containsKey(tokenKey)) {
+                        if (tag.equals("-")) {
+                            String str =  tokenKey+"\t"+token+"\n";
+                            fosInvented.write(str.getBytes());
+                        }
                         String str = tokenKey + "\t" + token + "\t";
                         if (KEYEVENTS) {
                             if (!tag.equals("-")) {
@@ -187,6 +216,10 @@ public class SemCoref {
                             fos.write(str.getBytes());
                         }
                     } else {
+                        if (!tag.equals("-")) {
+                            String str =  tokenKey+"\t"+token+"\n";
+                            fosMissed.write(str.getBytes());
+                        }
                         String str = tokenKey + "\t" + token + "\t" + "-" + "\n";
                         fos.write(str.getBytes());
                     }
@@ -195,6 +228,7 @@ public class SemCoref {
                         fos.write((inputLine+"\n").getBytes());
                 }
             }
+            fos.close();
             in.close();
 
         } catch (IOException e) {
