@@ -18,7 +18,7 @@ import java.util.Iterator;
  */
 public class SemCoref {
 
-
+        static boolean KEYEVENTS = false;
         static final String instanceGraph = "http://www.newsreader-project.eu/instances";
         static ArrayList<String> eventIdentifierArray = new ArrayList<String>();
 
@@ -79,7 +79,8 @@ public class SemCoref {
                 if (subject.indexOf("#ev")>-1) {
                     if (!eventIdentifierArray.contains(subject)) {
                         eventIdentifierArray.add(subject);
-                    }   String token = "";
+                    }
+                    String token = "";
                     String id = "";
                     String file = "";
                     String sentence = "";
@@ -100,10 +101,10 @@ public class SemCoref {
                     if (!token.isEmpty()) {
                         String tokenKey = file+"\t"+sentence+"\t"+token;
                         if (tokenIdMap.containsKey(tokenKey)) {
-                            System.out.println("id = " + id);
+/*                            System.out.println("id = " + id);
                             System.out.println("token = " + token);
                             System.out.println("subject = " + subject);
-                            System.out.println("object = " + object);
+                            System.out.println("object = " + object);*/
                         } else {
                             tokenIdMap.put(tokenKey, id);
                         }
@@ -126,6 +127,9 @@ public class SemCoref {
             }
             else if (arg.equals("--conll-file") && args.length>(i+1)) {
                 conllFile = args[i+1];
+            }
+            else if (arg.equals("--key-events")) {
+                KEYEVENTS = true;
             }
         }
         tokenIdMap = readSemTrig(trigfolder);
@@ -163,14 +167,17 @@ public class SemCoref {
                     String sentenceId = fields[1];
                     String tokenId = fields[2];
                     String token = fields[3];
-                    String tokenKey = fileId + "\t" + sentenceId + "\t" + tokenId;
-                    if (tokenIdMap.containsKey(tokenKey)) {
-                        String corefId = "(" + tokenIdMap.get(tokenKey) + ")";
-                        String str = tokenKey + "\t" + token + "\t" + corefId + "\n";
-                        fos.write(str.getBytes());
-                    } else {
-                        String str = tokenKey + "\t" + token + "\t" + "-" + "\n";
-                        fos.write(str.getBytes());
+                    String tag = fields[4];
+                    if (!tag.equals("-") || !KEYEVENTS) {
+                        String tokenKey = fileId + "\t" + sentenceId + "\t" + tokenId;
+                        if (tokenIdMap.containsKey(tokenKey)) {
+                            String corefId = "(" + tokenIdMap.get(tokenKey) + ")";
+                            String str = tokenKey + "\t" + token + "\t" + corefId + "\n";
+                            fos.write(str.getBytes());
+                        } else {
+                            String str = tokenKey + "\t" + token + "\t" + "-" + "\n";
+                            fos.write(str.getBytes());
+                        }
                     }
                 }
                 else {
