@@ -168,16 +168,27 @@ public class SemCoref {
                     String tokenId = fields[2];
                     String token = fields[3];
                     String tag = fields[4];
-                    if (!tag.equals("-") || !KEYEVENTS) {
-                        String tokenKey = fileId + "\t" + sentenceId + "\t" + tokenId;
-                        if (tokenIdMap.containsKey(tokenKey)) {
-                            String corefId = "(" + tokenIdMap.get(tokenKey) + ")";
-                            String str = tokenKey + "\t" + token + "\t" + corefId + "\n";
-                            fos.write(str.getBytes());
-                        } else {
-                            String str = tokenKey + "\t" + token + "\t" + "-" + "\n";
+                    String tokenKey = fileId + "\t" + sentenceId + "\t" + tokenId;
+                    if (tokenIdMap.containsKey(tokenKey)) {
+                        String str = tokenKey + "\t" + token + "\t";
+                        if (KEYEVENTS) {
+                            if (!tag.equals("-")) {
+                                String corefId = "(" + tokenIdMap.get(tokenKey) + ")";
+                                str += corefId + "\n";
+                            }
+                            else {
+                                str += tag+"\n";
+                            }
                             fos.write(str.getBytes());
                         }
+                        else {
+                            String corefId = "(" + tokenIdMap.get(tokenKey) + ")";
+                            str += corefId + "\n";
+                            fos.write(str.getBytes());
+                        }
+                    } else {
+                        String str = tokenKey + "\t" + token + "\t" + "-" + "\n";
+                        fos.write(str.getBytes());
                     }
                 }
                 else {
