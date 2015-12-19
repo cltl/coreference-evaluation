@@ -32,9 +32,6 @@ public class SemCoref {
 
             for (int i = 0; i < trigFiles.size(); i++) {
                 File file = trigFiles.get(i);
-                if (i%50==0) {
-                    System.out.println(i+": file.getName() = " + file.getParentFile().getName());
-                }
                 Dataset dataset = TDBFactory.createDataset();
                 dataset = RDFDataMgr.loadDataset(file.getAbsolutePath());
                 Iterator<String> it = dataset.listNames();
@@ -135,6 +132,7 @@ public class SemCoref {
                     KEYEVENTS = true;
                 }
             }
+            System.out.println("trigfolder = " + trigfolder);
             File conllFile = new File (conllFilePath);
             File outputMissed = new File (conllFile.getParentFile()+"/"+"response.missed.txt");
             File outputInvented = new File (conllFile.getParentFile()+"/"+"response.invented.txt");
@@ -164,16 +162,19 @@ public class SemCoref {
 
     static public void addSemToCoNLL (OutputStream fosMissed, OutputStream fosInvented, File file, HashMap<String, String> tokenIdMap){
         try {
-            OutputStream fos = new FileOutputStream(file.getAbsoluteFile()+".xdoc");
+            int idx = file.getAbsolutePath().lastIndexOf(".");
+
+            String outFile = file.getAbsolutePath();
+            if (idx>-1) {
+                outFile = file.getAbsolutePath().substring(0, idx);
+            }
+            outFile += ".response.xdoc";
+            OutputStream fos = new FileOutputStream(outFile);
             FileInputStream fis = new FileInputStream(file);
             InputStreamReader isr = new InputStreamReader(fis);
             BufferedReader in = new BufferedReader(isr);
             String inputLine = "";
-            String fileName = file.getName();
-            int idx = fileName.indexOf(".");
-            if (idx>-1) {
-                fileName = fileName.substring(0, idx);
-            }
+
             HashMap<String, ArrayList<String>> labelSet = new HashMap<String, ArrayList<String>>();
             HashMap<String, ArrayList<String>> tokenIdSet = new HashMap<String, ArrayList<String>>();
             while (in.ready()&&(inputLine = in.readLine()) != null) {
@@ -215,8 +216,10 @@ public class SemCoref {
                             str += corefId + "\n";
                             fos.write(str.getBytes());
                         }
-                    } else {
-                        if (!tag.equals("-")) {
+                    }
+                    else {
+                        if (!tag.equals("-") && !tag.equals("-")) {
+                           // System.out.println(tokenKey+" = " + tag+":"+token);
                             String str =  tokenKey+"\t"+token+"\n";
                             fosMissed.write(str.getBytes());
                         }
