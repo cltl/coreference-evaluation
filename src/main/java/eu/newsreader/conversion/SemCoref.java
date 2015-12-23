@@ -20,13 +20,12 @@ public class SemCoref {
 
         static boolean KEYEVENTS = false;
         static final String instanceGraph = "http://www.newsreader-project.eu/instances";
-        static ArrayList<String> eventIdentifierArray = new ArrayList<String>();
 
-        static public HashMap<String, String>  readSemTrig (String trigFolder) {
+        static public HashMap<String, String>  readSemTrig (ArrayList<String> eventIdentifierArray,String trigFolder) {
             HashMap<String, String> tokenIdMap = new HashMap<String, String>();
             ArrayList<File> trigFiles = new ArrayList<File>();
             trigFiles = Util.makeRecursiveFileList(new File(trigFolder), ".trig");
-            System.out.println("trigFiles.size() = " + trigFiles.size());
+           // System.out.println("trigFiles.size() = " + trigFiles.size());
 
             ArrayList<String> instanceTriples = new ArrayList<String>();
 
@@ -42,7 +41,7 @@ public class SemCoref {
                         StmtIterator siter = namedModel.listStatements();
                         while (siter.hasNext()) {
                             Statement s = siter.nextStatement();
-                            updateTokenMap(tokenIdMap, s);
+                            updateTokenMap(eventIdentifierArray, tokenIdMap, s);
                         }
                     }
                 }
@@ -51,7 +50,7 @@ public class SemCoref {
             return tokenIdMap;
         }
 
-        static void updateTokenMap (HashMap<String, String> tokenIdMap, Statement s) {
+        static void updateTokenMap (ArrayList<String> eventIdentifierArray, HashMap<String, String> tokenIdMap, Statement s) {
             String predicate = s.getPredicate().getURI();
 
             String subject = s.getSubject().getURI();
@@ -117,7 +116,8 @@ public class SemCoref {
             OutputStream fosInvented = null;
 
             HashMap<String, String> tokenIdMap = new HashMap<String, String>();
-            eventIdentifierArray = new ArrayList<String>();
+            ArrayList<String> eventIdentifierArray = new ArrayList<String>();
+
             String trigfolder ="";
             String conllFilePath = "";
             for (int i = 0; i < args.length; i++) {
@@ -149,7 +149,7 @@ public class SemCoref {
                 fosInvented = new FileOutputStream(outputInvented);
             }
 
-            tokenIdMap = readSemTrig(trigfolder);
+            tokenIdMap = readSemTrig(eventIdentifierArray, trigfolder);
             addSemToCoNLL(fosMissed, fosInvented, conllFile, tokenIdMap);
 
             fosInvented.close();
