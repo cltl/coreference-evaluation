@@ -18,7 +18,7 @@ import java.util.Iterator;
  */
 public class SemCoref {
 
-        static boolean KEYEVENTS = false;
+        static public boolean KEYEVENTS = false;
         static final String instanceGraph = "http://www.newsreader-project.eu/instances";
 
         static public HashMap<String, String>  readSemTrig (ArrayList<String> eventIdentifierArray,String trigFolder) {

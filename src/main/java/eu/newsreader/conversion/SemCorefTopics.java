@@ -14,7 +14,6 @@ import java.util.HashMap;
  */
 public class SemCorefTopics {
 
-    static boolean KEYEVENTS = false;
 
     static public void main (String[] args) {
         try {
@@ -32,7 +31,7 @@ public class SemCorefTopics {
                     conllPath = args[i+1];
                 }
                 else if (arg.equals("--key-events")) {
-                    KEYEVENTS = true;
+                    SemCoref.KEYEVENTS = true;
                 }
             }
             System.out.println("trigfolder = " + trigfolder);
