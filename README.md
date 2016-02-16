@@ -2,6 +2,8 @@ coreference-evaluation
 ======================
 Copyright (c) VU University Amsterdam, Piek Vossen, email: piek.vossen@vu.nl
 
+
+DESCRIPTION
 Evaluation package for event coreference using the reference-scorer
 
 Event coreference evaluation module
@@ -70,3 +72,24 @@ Function
 Example
    java -cp ../lib/coreference-evaluation-1.0-SNAPSHOT-jar-with-dependencies.jar eu.newsreader.result.CollectResults --result-folder ../../corpus_CONLL/corpus_apple/response --extension .result
 
+
+SOURCE CODE:
+
+https://github.com/cltl/coreference-evaluation
+
+The binaries can be built using maven and the pom.xml
+
+> mvn install
+
+REQUIREMENTS
+coreference-evaluation is developed in Java 1.6 and can run on any platform that supports Java 1.6
+
+LICENSE
+    coreference-evaluation is free software: you can redistribute it and/or modify
+    it under the terms of the The Apache License, Version 2.0:
+        http://www.apache.org/licenses/LICENSE-2.0.txt.
+
+    coreference-evaluation is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
