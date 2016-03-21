@@ -4,14 +4,47 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>coreference-evaluation</groupId>
+    <groupId>com.github.cltl</groupId>
     <artifactId>coreference-evaluation</artifactId>
-    <version>2.0</version>
+    <version>3.0</version>
+    <packaging>jar</packaging>
+    <name>coreference-evalutation</name>
+    <description>Evaluates coreference data in CoNLL2011/2012 format in combination with CorefScorer.</description>
+    <url>http://www.newsreader-project.eu</url>
+    <scm>
+        <connection>scm:git:git@github.com/cltl/coreference-evaluation</connection>
+        <developerConnection>scm:git:git@github.com/cltl/coreference-evaluation</developerConnection>
+        <url>git@github.com/cltl/coreference-evaluation</url>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Piek Vossen</name>
+            <email>piekvossen@gmail.com</email>
+            <organization>VU University Amsterdam</organization>
+            <organizationUrl>http://www.cltl.nl</organizationUrl>
+        </developer>
+    </developers>
+
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
 
     <dependencies>
         <dependency>
-            <groupId>KyotoKafSaxParser</groupId>
-            <artifactId>KyotoKafSaxParser</artifactId>
+            <groupId>com.github.cltl</groupId>
+            <artifactId>KafSaxParser</artifactId>
             <version>3.0</version>
         </dependency>
         <dependency>
