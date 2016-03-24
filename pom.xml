@@ -6,7 +6,7 @@
 
     <groupId>com.github.cltl</groupId>
     <artifactId>coreference-evaluation</artifactId>
-    <version>3.0</version>
+    <version>v3.0</version>
     <packaging>jar</packaging>
     <name>coreference-evalutation</name>
     <description>Evaluates coreference data in CoNLL2011/2012 format in combination with CorefScorer.</description>
@@ -45,7 +45,7 @@
         <dependency>
             <groupId>com.github.cltl</groupId>
             <artifactId>KafSaxParser</artifactId>
-            <version>3.0</version>
+            <version>v3.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.jena</groupId>
