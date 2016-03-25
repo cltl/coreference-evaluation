@@ -19,8 +19,17 @@ public class CoNLLGoldMentionsToNAF {
 
 
     static public void main (String[] args) {
-          String coNLLPath = "/Users/piek/Desktop/NWR/benchmark/ecb/nwr/ecb+.key";
+          String coNLLPath = "/Users/piek/Desktop/NWR/benchmark/ecb/nwr/ecb+topic+sw.key";
           String nafFilePath = "/Users/piek/Desktop/NWR/benchmark/ecb/nwr/data/ecb_pip.gold";
+          for (int i = 0; i < args.length; i++) {
+              String arg = args[i];
+              if (arg.equals("--CoNLL") && args.length>(i+1)) {
+                  coNLLPath = args[i+1];
+              }
+              else if (arg.equals("--naf") && args.length>(i+1)) {
+                  nafFilePath = args[i+1];
+              }
+          }
           File coNLLFile = new File(coNLLPath);
           File nafFile = new File(nafFilePath);
           HashMap<String, ArrayList<CoNLLdata>> conllDataMap = readCoNLLFile(coNLLFile);
