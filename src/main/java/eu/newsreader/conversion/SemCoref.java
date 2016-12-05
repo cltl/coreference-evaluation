@@ -17,7 +17,7 @@ import java.util.Iterator;
  * Created by piek on 18/10/15.
  */
 public class SemCoref {
-
+        static boolean DEBUG = false;
         static public boolean KEYEVENTS = false;
         static final String instanceGraph = "http://www.newsreader-project.eu/instances";
 
@@ -76,28 +76,35 @@ public class SemCoref {
                     if (!eventIdentifierArray.contains(subject)) {
                         eventIdentifierArray.add(subject);
                     }
-                    String token = "";
+                    String tokenId = "";
                     String id = "";
                     String file = "";
                     String sentence = "";
                     file = Util.getFileFromMention(object);
                     sentence = Util.getSentence(object);
-                    token = Util.getTokenId(object);
+                    tokenId = Util.getTokenId(object);
                    // id = Util.getNumericId(subject); /// this does not work, they get messed up
                     Integer numericEventId = eventIdentifierArray.indexOf(subject);
-                    //System.out.println("numericEventId = " + numericEventId);
-                    //System.out.println("eventIdentifierArray = " + eventIdentifierArray.size());
                     id = numericEventId.toString();
+                    //if (file.equals("s1_pre_1") && tokenId.equals("27"))  DEBUG = true; else DEBUG = false;
+                    if (DEBUG) {
+                        System.out.println("file = " + file);
+                        System.out.println("object = " + object);
+                    }
                   //  System.out.println("id = " + id);
                   //  System.out.println("subject = " + subject);
                     //1_10ecbplus.xml.naf.fix.xml#ev27
                     //1_10ecbplus.xml.naf.fix.xml#char=592,597&word=w116&term=t116&sentence=5
                     // get ID
                     // get tokens
-                    if (!token.isEmpty()) {
-                        String tokenKey = file+"\t"+sentence+"\t"+token;
+                    if (!tokenId.isEmpty()) {
+                        String tokenKey = file+"\t"+sentence+"\t"+tokenId;
+                        if (DEBUG) {
+                            System.out.println("tokenKey = " + tokenKey);
+                            System.out.println("id = " + id);
+                        }
                         if (tokenIdMap.containsKey(tokenKey)) {
-/*                            System.out.println("id = " + id);
+                          /*  System.out.println("id = " + id);
                             System.out.println("token = " + token);
                             System.out.println("subject = " + subject);
                             System.out.println("object = " + object);*/
@@ -194,7 +201,12 @@ public class SemCoref {
                     String tokenId = fields[2];
                     String token = fields[3];
                     String tag = fields[4];
+                   // if (fileId.equals("s1_pre_1") && tokenId.equals("27"))  DEBUG = true; else DEBUG = false;
+
                     String tokenKey = fileId + "\t" + sentenceId + "\t" + tokenId;
+                    if (DEBUG) {
+                        System.out.println("tokenKey = " + tokenKey);
+                    }
                     if (tokenIdMap.containsKey(tokenKey)) {
                         if (tag.equals("-")) {
                             String str =  tokenKey+"\t"+token+"\n";
@@ -218,6 +230,7 @@ public class SemCoref {
                         }
                     }
                     else {
+                        if (DEBUG) System.out.println("Cannot find tokenKey = " + tokenKey);
                         if (!tag.equals("-") && !tag.equals("-")) {
                            // System.out.println(tokenKey+" = " + tag+":"+token);
                             String str =  tokenKey+"\t"+token+"\n";
