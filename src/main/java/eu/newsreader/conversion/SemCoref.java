@@ -204,9 +204,13 @@ public class SemCoref {
                 if (!tokenId.isEmpty()) {
                     String tokenKey = file+"\t"+sentence+"\t"+tokenId;
                     if (keyTokens.contains(tokenKey)) {
+                       // System.out.println("subject = " + subject);
                         if (!eventIdentifierArray.contains(subject)) {
                             eventIdentifierArray.add(subject);
                         }
+                    }
+                    else {
+                        ////
                     }
 
                 }
@@ -286,6 +290,7 @@ public class SemCoref {
                     }
                     else {
                         // this event identifier is not relevant
+                      //  System.out.println("not relevant subject = " + subject);
                     }
                 }
             }
@@ -336,6 +341,7 @@ public class SemCoref {
 
             if (EXPANDEDKEYEVENTS) {
                 ArrayList<String> keyTokens = getKeyEventTokensFromCoNNL(conllFile);
+                //System.out.println("keyTokens.toString() = " + keyTokens.toString());
                 tokenIdMap = readSemTrigExpandKeyEvents (keyTokens, trigfolder);
             }
             else {
